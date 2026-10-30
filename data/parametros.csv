@@ -1,0 +1,139 @@
+Sección,Tema,Comando,Parámetro,Descripción,Ejemplo
+Conceptos,Comandos básicos de Linux [1-2],sudo,su,Cambia a la sesión de root de forma permanente hasta que salgas,sudo su
+Conceptos,Comandos básicos de Linux [1-2],grep,-n,Muestra el número de línea de cada coincidencia,"grep -n ""root"" /etc/passwd"
+Conceptos,Comandos básicos de Linux [1-2],cat,/etc/group,Archivo con los grupos existentes y sus usuarios,cat /etc/group
+Conceptos,Comandos básicos de Linux [1-2],echo,$PATH,Variable con las carpetas donde el sistema busca los comandos,echo $PATH
+Conceptos,Comandos básicos de Linux [2-2],command,-v,"Muestra la ruta de un comando, similar a which",command -v python3
+Conceptos,Comandos básicos de Linux [2-2],ls,-l,"Lista en formato detallado (permisos, dueño, tamaño, fecha)",ls -l /etc
+Conceptos,Comandos básicos de Linux [2-2],cd,.,Se queda en la carpeta actual,cd .
+Conceptos,Comandos básicos de Linux [2-2],cd,..,Sube un nivel a la carpeta anterior,cd ..
+Conceptos,Comandos básicos de Linux [2-2],cd,(ruta absoluta),Va a una ubicación específica desde la raíz del sistema,cd /var/log
+Conceptos,Comandos básicos de Linux [2-2],cd,(ruta relativa),Va a una ubicación según el directorio actual,cd ../documentos
+Conceptos,Comandos básicos de Linux [2-2],cd,/,Va directo a la raíz del sistema,cd /
+Conceptos,Comandos básicos de Linux [2-2],cd,~,Va a la carpeta personal (home) del usuario,cd ~
+Conceptos,Comandos básicos de Linux [2-2],echo,$HOME,Variable con la ruta de la carpeta personal del usuario,echo $HOME
+Conceptos,Comandos básicos de Linux [2-2],echo,$SHELL,"Variable con la ruta del intérprete de comandos en uso (bash, zsh)",echo $SHELL
+Conceptos,Comandos básicos de Linux [2-2],cat,/etc/passwd,"Archivo con información básica de los usuarios (UID, home, shell)",cat /etc/passwd
+Conceptos,Comandos básicos de Linux [2-2],cat,/etc/shells,Archivo con las shells disponibles e instaladas,cat /etc/shells
+Conceptos,"Control del flujo stderr-stdout, operadores y procesos en segundo plano",cat,/etc/hosts,Archivo con asociaciones manuales entre IP y dominios sin usar DNS,cat /etc/hosts
+Conceptos,"Control del flujo stderr-stdout, operadores y procesos en segundo plano",echo,$?,"Código de salida del último comando (0 éxito, otro valor error)",ls /noexiste ; echo $?
+Conceptos,Descriptores de archivo,exec,3<> file,"Abre ""file"" en lectura y escritura asignándolo al descriptor 3",exec 3<> archivo.txt
+Conceptos,Descriptores de archivo,exec,>&3,Redirige la salida estándar de la sesión al descriptor 3,exec >&3
+Conceptos,Descriptores de archivo,exec,3>&-,Cierra el descriptor 3,exec 3>&-
+Conceptos,Descriptores de archivo,exec,5>&3,Duplica el descriptor 3 en el descriptor 5,exec 5>&3
+Conceptos,Descriptores de archivo,exec,8>&3-,Duplica el descriptor 3 en el 8 y cierra el 3 original,exec 8>&3-
+Conceptos,Lectura e interpretación de permisos [2-2],cat,/etc/shadow,Archivo donde se guardan las contraseñas de usuarios cifradas,sudo cat /etc/shadow
+Conceptos,Lectura e interpretación de permisos [2-2],cat,/etc/login.defs,Configuración del sistema; ENCRYPT_METHOD define el método de cifrado de contraseñas,grep ENCRYPT_METHOD /etc/login.defs
+Conceptos,Asignación de permisos [1-2],chmod,o+w,"Agrega permiso de escritura a ""others"" (otros usuarios)",chmod o+w archivo.txt
+Conceptos,Asignación de permisos [1-2],chmod,o-w,"Quita permiso de escritura a ""others"" (otros usuarios)",chmod o-w archivo.txt
+Conceptos,Asignación de permisos [1-2],rm,-r,Elimina carpetas con todo su contenido de forma recursiva,rm -r carpeta_vieja
+Conceptos,Asignación de permisos [2-2],useradd,-s,Define la shell del nuevo usuario,sudo useradd -s /bin/bash juan
+Conceptos,Asignación de permisos [2-2],useradd,-d,Define la carpeta home del nuevo usuario,sudo useradd -d /home/juan juan
+Conceptos,Asignación de permisos [2-2],usermod,-a,Junto con -G agrega al usuario a un grupo sin quitarlo de los actuales,sudo usermod -a -G sudo juan
+Conceptos,Asignación de permisos [2-2],usermod,-G,Define los grupos secundarios del usuario,"sudo usermod -G desarrollo,docker juan"
+Conceptos,Notación octal de permisos,chmod,755,"Notación octal: r=4, w=2, x=1 y se suman por bloque (propietario, grupo, otros); 755 equivale a rwxr-xr-x y 777 a permisos completos para todos",chmod 755 script.sh
+Conceptos,Permisos especiales - Sticky Bit,chmod,+t,Activa el Sticky Bit en una carpeta: solo el dueño del archivo o root puede borrarlo o renombrarlo,chmod +t /tmp/compartida
+Conceptos,Control de atributos de ficheros - Chattr y Lsattr,rm,-f,"Fuerza la eliminación sin pedir confirmación, incluso si está protegido contra escritura",rm -f archivo_protegido.txt
+Conceptos,Control de atributos de ficheros - Chattr y Lsattr,chattr,+i,"Hace el archivo inmutable: nadie puede modificarlo, borrarlo ni renombrarlo, ni root, hasta quitar el atributo",sudo chattr +i archivo.txt
+Conceptos,Control de atributos de ficheros - Chattr y Lsattr,chattr,-V,Modo detallado (verbose) al modificar el atributo,sudo chattr -V +i archivo.txt
+Conceptos,Permisos especiales - SUID y SGID,chmod,4000,Valor octal del permiso especial SUID en notación numérica,chmod 4755 programa
+Conceptos,Permisos especiales - SUID y SGID,chmod,u+s,Forma simbólica de activar SUID (bit s en ejecución del propietario),chmod u+s programa
+Conceptos,Permisos especiales - SUID y SGID,chmod,2000,Valor octal del permiso especial SGID en notación numérica,chmod 2755 carpeta
+Conceptos,Permisos especiales - SUID y SGID,chmod,g+s,Forma simbólica de activar SGID (bit s en ejecución del grupo),chmod g+s carpeta
+Conceptos,Privilegios especiales - Capabilities,getcap,-r,Busca y muestra Capabilities de forma recursiva en subcarpetas,getcap -r / 2>/dev/null
+Conceptos,Privilegios especiales - Capabilities,setcap,-r,Elimina las Capabilities asignadas a un archivo,sudo setcap -r /usr/bin/ping
+Conceptos,Uso de bashrc y zshrc,ls,-a,Muestra todos los archivos incluyendo los ocultos (con punto),ls -a ~
+Conceptos,Uso de bashrc y zshrc,hostname,-I,Muestra la o las direcciones IP asignadas al equipo,hostname -I
+Conceptos,Uso de bashrc y zshrc,cut,-d,Define el delimitador para dividir el texto en columnas,"cut -d "":"" -f 1 /etc/passwd"
+Conceptos,Uso de bashrc y zshrc,cut,-f,Selecciona el número de campo (columna) a extraer,"cut -d "":"" -f 3 /etc/passwd"
+Conceptos,Uso de bashrc y zshrc,awk,'{print $1}',Imprime la primera columna de cada línea,ls -l | awk '{print $1}'
+Conceptos,Uso de bashrc y zshrc,alias,nombre='ruta_absoluta',Crea un atajo para ejecutar un comando o ruta larga con una palabra corta,alias ll='ls -la'
+Conceptos,Uso de bashrc y zshrc,export,nombre_de_la_variable,Convierte una variable en variable de entorno disponible para otros procesos,"export MI_VAR=""hola"""
+Conceptos,Actualización y Upgradeo del sistema,apt,update,Actualiza la lista de paquetes disponibles desde los repositorios sin instalar nada,sudo apt update
+Conceptos,Actualización y Upgradeo del sistema,apt,upgrade,Instala las actualizaciones de los paquetes instalados (no usar en Parrot),sudo apt upgrade
+Conceptos,Actualización y Upgradeo del sistema,sudo,pacman -Syu,Arch Linux: sincroniza la lista de paquetes y actualiza todo el sistema,sudo pacman -Syu
+Conceptos,Búsquedas a nivel de sistema,find,-name,Busca archivos por nombre exacto o con comodines,find -name '*xampl*.sh'
+Conceptos,Búsquedas a nivel de sistema,find,-type,Filtra por tipo: archivo (f) o carpeta (d),find /home -type f
+Conceptos,Búsquedas a nivel de sistema,find,-perm,Filtra por los permisos específicos del archivo,find / -perm -4000 2>/dev/null
+Conceptos,Búsquedas a nivel de sistema,find,-group,Filtra por grupo propietario,find /home -group desarrollo
+Conceptos,Búsquedas a nivel de sistema,find,-user,Filtra por usuario propietario,find /home -user juan
+Conceptos,Búsquedas a nivel de sistema,find,-writable,Muestra solo archivos sobre los que tienes permiso de escritura,find /etc -writable 2>/dev/null
+Conceptos,Búsquedas a nivel de sistema,find,-executable,Muestra solo archivos sobre los que tienes permiso de ejecución,find /usr/bin -executable -type f
+Conceptos,Búsquedas a nivel de sistema,find,-readable,Muestra solo archivos sobre los que tienes permiso de lectura,find /var -readable 2>/dev/null
+Conceptos,Creación de scripts en Bash,tail,-n,Define cuántas líneas finales mostrar,tail -n 20 /var/log/syslog
+Conceptos,Creación de scripts en Bash,awk,'NR==2',Muestra solo la línea número 2 (NR = número de registro),awk 'NR==2' archivo.txt
+Conceptos,Creación de scripts en Bash,awk,"FS=""/""","Define ""/"" como separador de campo (FS) para dividir en columnas","echo ""/home/juan"" | awk '{print $2}' FS=""/"""
+Conceptos,Creación de scripts en Bash,echo,-e,"Activa la interpretación de caracteres especiales (\n, \t) en el texto impreso","echo -e ""línea1\nlínea2"""
+Conceptos,Creación de scripts en Bash,echo,"-e ""\n""",\n representa un salto de línea; requiere el parámetro -e,"echo -e ""Hola\nMundo"""
+Labs,Conexiones SSH,ssh,-p,Especifica el puerto al que conectarse cuando el servidor SSH no usa el puerto por defecto (22),ssh -p 2222 usuario@192.168.1.10
+Labs,Conexiones SSH,export,TERM=xterm,Define el tipo de terminal; útil ante problemas de compatibilidad en una conexión remota,export TERM=xterm
+Labs,Conexiones SSH,sshpass,-p,Indica la contraseña directamente en el comando para no escribirla manualmente al conectarse por SSH,sshpass -p 'mi_clave' ssh usuario@192.168.1.10
+Labs,Conexiones SSH,ssh,bandit0@bandit.labs.overthewire.org -p 2220,Se conecta al servidor de Bandit con el usuario bandit0 en el puerto 2220 en vez del 22,ssh bandit0@bandit.labs.overthewire.org -p 2220
+Labs,Lectura de archivos especiales [1-2],cat,/home/bandit1/-,"Lee el archivo llamado ""-"" con su ruta absoluta, evitando que cat lo confunda con la entrada estándar",cat /home/bandit1/-
+Labs,Lectura de archivos especiales [1-2],cat,./-,"Lee el archivo ""-"" indicando que está en el directorio actual, evitando la confusión con stdin",cat ./-
+Labs,Lectura de archivos especiales [1-2],cat,$(pwd)/-,Combina pwd (ruta actual) con el nombre del archivo; mismo efecto que la ruta absoluta,cat $(pwd)/-
+Labs,Lectura de archivos especiales [1-2],grep,"-r ""\w""",Busca recursivamente líneas con al menos un carácter alfanumérico para encontrar contenido en archivos de cualquier carpeta,"grep -r ""\w"" /home/usuario/"
+Labs,Lectura de archivos especiales [1-2],cut,-d ':' -f 2,"Divide cada línea usando "":"" como delimitador y extrae solo el segundo campo","echo ""a:b:c"" | cut -d ':' -f 2"
+Labs,Lectura de archivos especiales [1-2],tr,':' ' ',"Reemplaza cada "":"" por un espacio en el texto procesado","echo ""a:b:c"" | tr ':' ' '"
+Labs,Lectura de archivos especiales [1-2],awk,"'{print $2}' FS="":""","Usa "":"" como separador de campo (FS) e imprime la segunda columna de cada línea","echo ""a:b:c"" | awk '{print $2}' FS="":"""
+Labs,Lectura de archivos especiales [1-2],awk,'NF{print $NF}',Imprime el último campo de cada línea; NF es el número de campos y $NF el valor del último,"echo ""uno dos tres"" | awk 'NF{print $NF}'"
+Labs,Lectura de archivos especiales [1-2],tail,-n 1,Muestra únicamente la última línea del archivo o texto procesado,tail -n 1 archivo.txt
+Labs,Lectura de archivos especiales [1-2],head,-n 1,Muestra únicamente la primera línea del archivo o texto procesado,head -n 1 archivo.txt
+Labs,Lectura de archivos especiales [2-2],cat,"""spaces in this filename""",Lee un archivo con espacios usando comillas para que se interprete como un solo nombre,"cat ""spaces in this filename"""
+Labs,Lectura de archivos especiales [2-2],cat,spaces\ in\ this\ filename,Lee un archivo con espacios escapando cada espacio con barra invertida para que no sean separadores de argumentos,cat spaces\ in\ this\ filename
+Labs,Lectura de archivos especiales [2-2],cat,s*,"Usa un comodín para completar el nombre automáticamente, siempre que no haya otros archivos que empiecen igual",cat s*
+Labs,Lectura de archivos especiales [2-2],cat,home/bandit/s*,"Igual que el anterior, especificando la ruta donde se encuentra el archivo",cat home/bandit/s*
+Labs,Directorios y archivos ocultos,find,.,"Lista todos los archivos y carpetas del directorio actual, incluyendo subdirectorios",find .
+Labs,Directorios y archivos ocultos,grep,"-vE ""bashrc\|profile""","Muestra las líneas que NO coinciden con ""bashrc"" ni ""profile""; -v invierte la coincidencia y -E permite regex extendidas (\| significa ""o"")","ls -a | grep -vE ""bashrc|profile"""
+Labs,Búsquedas precisas de archivos [1-2],find,-size,Filtra la búsqueda según el tamaño del archivo,find -size 1033c
+Labs,Método de filtrado de datos [2-2],uniq,-u,"Muestra solo las líneas completamente únicas, que no se repiten en el texto",sort datos.txt | uniq -u
+Labs,Codificación y decodificación en base64,base64,-d,Decodifica un texto en Base64 devolviéndolo a su forma original,"echo ""aG9sYQ=="" | base64 -d"
+Labs,Cifrado césar y uso de tr,tr,'[A-Za-z]' '[N-ZA-Mn-za-m]',"Reemplaza cada letra por la que está 13 posiciones adelante, aplicando el cifrado ROT13","echo ""Uryyb"" | tr '[A-Za-z]' '[N-ZA-Mn-za-m]'"
+Labs,Descompresor recursivo en Bash,xxd,-p,"Muestra la salida en hexadecimal plano, sin direcciones ni texto al lado",xxd -p archivo.bin
+Labs,Descompresor recursivo en Bash,xxd,-s,Salta a un offset específico del archivo antes de mostrarlo en hexadecimal,xxd -s 16 archivo.bin
+Labs,Descompresor recursivo en Bash,xxd,-r,Revierte un volcado hexadecimal de vuelta a binario,xxd -r datos.hex salida.bin
+Labs,Descompresor recursivo en Bash,7z,l,Lista el contenido de un archivo comprimido sin extraerlo,7z l respaldo.7z
+Labs,Descompresor recursivo en Bash,7z,x,Extrae el contenido de un archivo comprimido respetando la estructura de carpetas,7z x respaldo.7z
+Labs,Descompresor recursivo en Bash,trap,ctrl_c INT,Captura la señal Ctrl+C y ejecuta una función en vez de terminar el script de inmediato,trap ctrl_c INT
+Labs,Descompresor recursivo en Bash,exit,1,"Termina el script con código de salida 1, indicando error",exit 1
+Labs,Descompresor recursivo en Bash,function,ctrl_c(){},"Define la función ctrl_c, que se ejecuta cuando trap captura Ctrl+C","function ctrl_c(){ echo ""Saliendo...""; exit 1; }"
+Labs,Descompresor recursivo en Bash,while,[ ]; do; done,Repite el bloque de código mientras la condición entre corchetes sea verdadera,while [ -f archivo.gz ]; do gunzip archivo.gz; done
+Labs,Pares de claves y conexiones SSH,ssh-copy-id,-i,Especifica el archivo de clave pública a copiar cuando hay varias claves,ssh-copy-id -i ~/.ssh/id_ed25519.pub usuario@192.168.1.10
+Labs,Pares de claves y conexiones SSH,ssh,-i,Especifica el archivo de clave privada a usar para autenticarse por SSH,ssh -i ~/.ssh/id_ed25519 usuario@192.168.1.10
+Labs,Pares de claves y conexiones SSH,cat,~/.ssh/authorized_keys,Archivo con las claves públicas SSH autorizadas para entrar a esa cuenta sin contraseña,cat ~/.ssh/authorized_keys
+Labs,Uso de netcat para realizar conexiones,ss,-nltp,"Muestra sockets en escucha TCP, sin resolver nombres, mostrando el proceso asociado",sudo ss -nltp
+Labs,Uso de netcat para realizar conexiones,lsof,-i:,Filtra la salida mostrando solo las conexiones relacionadas con el puerto especificado,sudo lsof -i:80
+Labs,Uso de netcat para realizar conexiones,ps,-faux,Muestra todos los procesos de todos los usuarios en formato detallado y jerárquico,ps -faux
+Labs,Uso de netcat para realizar conexiones,ps,-eo command,Muestra solo la columna del comando ejecutado por cada proceso,ps -eo command
+Labs,Uso de netcat para realizar conexiones,echo,"""obase=10; ibase=16; $hexNum"" | bc",Convierte el valor hexadecimal de una variable a decimal usando bc,"hexNum=""FF""; echo ""obase=10; ibase=16; $hexNum"" | bc"
+Labs,Uso de netcat para realizar conexiones,cat,/proc/net/tcp,"Archivo virtual con las conexiones TCP activas (IP, puertos y estado) en formato hexadecimal",cat /proc/net/tcp
+Labs,Uso de netcat para realizar conexiones,while,read line; do; done,Lee una entrada línea por línea y ejecuta el bloque de código por cada línea leída,cat lista.txt | while read line; do echo $line; done
+Labs,Uso de netcat para realizar conexiones,for,line in; do; done,Recorre uno por uno los elementos de una lista y ejecuta el bloque por cada elemento,for line in $(cat lista.txt); do echo $line; done
+Labs,Uso de conexiones encriptadas,ncat,--ssl,Cifra la conexión usando SSL/TLS para proteger los datos transmitidos,ncat --ssl 192.168.1.10 443
+Labs,Creando nuestros propios escáneres en Bash,mktemp,-d,"Crea una carpeta temporal en vez de un archivo, con nombre único",mktemp -d
+Labs,Creando nuestros propios escáneres en Bash,timeout,"1 bash -c """"","Ejecuta un comando con un límite de tiempo (1 segundo); si no termina, se cancela","timeout 1 bash -c ""echo > /dev/tcp/127.0.0.1/22"" && echo ""abierto"""
+Labs,Creando nuestros propios escáneres en Bash,tput,civis,Oculta el cursor de la terminal,tput civis
+Labs,Creando nuestros propios escáneres en Bash,tput,cnorm,Vuelve a mostrar el cursor de la terminal en su forma normal,tput cnorm
+Labs,Ejecución de comandos por SSH,ssh,"usuario@host ""comando""","Ejecuta un comando directamente en el servidor remoto al conectar, sin cargar una sesión interactiva completa ni el bashrc del usuario","ssh usuario@192.168.1.10 ""ls -la"""
+Labs,Abusando de privilegio SUID para migrar de usuario,bash,-p,"Inicia la shell en modo privilegiado, evitando que se reseteen el UID/GID efectivos, útil para mantener privilegios obtenidos por SUID",bash -p
+Labs,Abusando de tareas Cron [1-3],ls,/etc/cron.d,Directorio donde se almacenan los archivos de configuración de las tareas Cron del sistema,ls -l /etc/cron.d
+Labs,Abusando de tareas Cron [1-3],crontab,* * * * * comando,"Formato de una tarea Cron: Minuto Hora Día-del-mes Mes Día-de-la-semana Comando; el * significa todos los valores (cada minuto, hora, etc.)",* * * * * /home/user/script.sh
+Labs,Abusando de tareas Cron [3-3],watch,-n 1,Define el intervalo en segundos entre cada ejecución del comando; en este caso cada 1 segundo,watch -n 1 ls -l /tmp
+Labs,Escapando del contexto de un comando,more,v,"Desde more, abre el modo visual (editor vi) sobre el contenido",v (dentro de more)
+Labs,Escapando del contexto de un comando,more,:set shell=/bin/bash,"Ya en el modo visual (tras Esc + Shift + :), define Bash como la shell a usar",:set shell=/bin/bash
+Labs,Escapando del contexto de un comando,more,:shell,"Abre una shell interactiva desde el modo visual, escapando del contexto de more",:shell
+Labs,Operando con proyectos de Github [2-5],git show,(id del commit),Muestra todos los cambios que se aplicaron en ese commit,git show a1b2c3d
+Labs,Operando con proyectos de Github [2-5],git checkout,(id del commit),"Regresa el proyecto a ese punto de la historia, restaurando los archivos que existían entonces",git checkout a1b2c3d
+Labs,Operando con proyectos de Github [3-5],git branch,-a,"Lista todas las ramas del proyecto, tanto locales como remotas",git branch -a
+Labs,Operando con proyectos de Github [3-5],git checkout,(nombre de la rama),Cambia a la rama indicada por su nombre,git checkout develop
+Labs,Operando con proyectos de Github [4-5],git show,(nombre del tag),"Muestra la información del tag indicado y del commit al que apunta, con sus cambios",git show v1.0
+Labs,Operando con proyectos de Github [5-5],git add,-f,Fuerza agregar el archivo al área de preparación aunque esté ignorado por el .gitignore,git add -f key.txt
+Labs,Operando con proyectos de Github [5-5],git commit,"-m ""identifier""",Define el mensaje que identifica al commit,"git commit -m ""Agrego key.txt"""
+Labs,Operando con proyectos de Github [5-5],git push,-u origin branch,Sube los commits a la rama indicada del remoto origin y la deja vinculada para que los siguientes push/pull no necesiten especificarla,git push -u origin master
+Scripting,Scripting en Bash [1-6],curl,-s,Modo silencioso: no muestra la barra de progreso ni mensajes de error,curl -s https://ejemplo.com
+Scripting,Scripting en Bash [1-6],curl,-X GET,"Define el método HTTP de la petición (GET, POST, PUT...)",curl -s -X GET https://ejemplo.com
+Scripting,Scripting en Bash [1-6],getopts,"""m:h"" arg","Lista de opciones válidas que se guardan en arg; los "":"" tras una letra indican que esa opción recibe un valor, que queda en $OPTARG","while getopts ""m:h"" arg; do case $arg in m) nombre=$OPTARG;; h) ayuda;; esac; done"
+Scripting,Scripting en Bash [1-6],case,m) comando;;,Define un patrón dentro de case y el bloque a ejecutar si coincide; ;; cierra ese bloque,"case $arg in m) echo ""opción m"";; esac"
+Scripting,Scripting en Bash [1-6],declare,-i,"Define la variable como entera, para que su valor se trate como número",declare -i contador=0
+Scripting,Scripting en Bash [1-6],let,+=,Suma un valor al que ya tiene la variable,let contador+=1
+Scripting,Scripting en Bash [1-6],if,-eq,Compara si dos números son iguales (equal to),"if [ $a -eq $b ]; then echo ""iguales""; fi"
