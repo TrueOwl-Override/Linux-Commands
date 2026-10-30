@@ -1,0 +1,103 @@
+Section,Topic,Command,Description,Example
+Concepts,Basic Linux commands [1-2],whoami,Shows the name of the user you're currently logged in as,whoami
+Concepts,Basic Linux commands [1-2],id,"Shows user info: UID, GID and the groups they belong to",id root
+Concepts,Basic Linux commands [1-2],sudo,Runs a single command with administrator privileges without switching users,sudo apt update
+Concepts,Basic Linux commands [1-2],exit,Closes the current session or leaves an elevated session (like root),exit
+Concepts,Basic Linux commands [1-2],cat,Prints a file's contents to the terminal,cat notes.txt
+Concepts,Basic Linux commands [1-2],which,Shows where a command or program is installed,which python3
+Concepts,Basic Linux commands [1-2],echo,Prints text or a variable's value to the terminal,"echo ""Hello world"""
+Concepts,Basic Linux commands [1-2],grep,Searches and filters lines of text that match a pattern,"grep ""error"" log.txt"
+Concepts,Basic Linux commands [1-2],|,Pipe: sends one command's output as the next command's input,cat /etc/passwd | grep root
+Concepts,Basic Linux commands [1-2],Ctrl + L,Shortcut that clears the terminal screen without losing your history,Ctrl + L (same as typing clear)
+Concepts,Basic Linux commands [2-2],pwd,Shows the full path of the current directory,pwd
+Concepts,Basic Linux commands [2-2],ls,Lists the files and folders in the current directory,ls /etc
+Concepts,Basic Linux commands [2-2],cd,Changes directory,cd /var/log
+Concepts,Basic Linux commands [2-2],bash,The command interpreter that processes and runs what you type,bash script.sh
+Concepts,Basic Linux commands [2-2],command,"With -v, shows the path of a command, similar to which",command -v python3
+Concepts,"Controlling stderr/stdout, operators and background processes",disown,Detaches a background process from the terminal so it keeps running after you close it,sleep 100 & disown
+Concepts,"Controlling stderr/stdout, operators and background processes",;,Runs commands in sequence whether or not the previous one failed,cd /tmp ; ls
+Concepts,"Controlling stderr/stdout, operators and background processes",&&,Runs the next command only if the previous one succeeded,mkdir test && cd test
+Concepts,"Controlling stderr/stdout, operators and background processes",||,Runs the next command only if the previous one failed,"ping -c 1 8.8.8.8 || echo ""no connection"""
+Concepts,"Controlling stderr/stdout, operators and background processes",&,"Runs the command in the background, leaving the terminal free",sleep 60 &
+Concepts,"Controlling stderr/stdout, operators and background processes",2>/dev/null,Sends errors (stderr) to /dev/null so they aren't shown,"find / -name ""*.conf"" 2>/dev/null"
+Concepts,"Controlling stderr/stdout, operators and background processes",2>&1,"Redirects stderr to stdout, showing everything together",ls /doesnotexist > output.txt 2>&1
+Concepts,"Controlling stderr/stdout, operators and background processes",&>/dev/null,"Sends both normal output and errors to /dev/null, hiding everything",ping -c 1 8.8.8.8 &>/dev/null
+Concepts,File descriptors,>,"Redirects output to a file, overwriting its contents","echo ""hello"" > file.txt"
+Concepts,File descriptors,>>,"Redirects output to a file, appending it to the end","echo ""another line"" >> file.txt"
+Concepts,File descriptors,exec,"Manipulates the current session's file descriptors (open, close, redirect)",exec 3<> file.txt
+Concepts,Reading and understanding permissions [1-2],touch,"Creates an empty file, or updates its modification date if it already exists",touch new.txt
+Concepts,Reading and understanding permissions [1-2],rm,Deletes files or folders,rm old.txt
+Concepts,Reading and understanding permissions [1-2],nano,Simple text editor in the terminal,nano notes.txt
+Concepts,Reading and understanding permissions [1-2],vi,"Advanced, powerful text editor with a steeper learning curve than nano",vi notes.txt
+Concepts,Assigning permissions [1-2],mkdir,Creates a new folder,mkdir projects
+Concepts,Assigning permissions [1-2],su,"Switches to another user in the terminal, asking for their password",su - john
+Concepts,Assigning permissions [1-2],chmod,Changes the permissions of a file or folder; + adds and - removes a permission,chmod 755 script.sh
+Concepts,Assigning permissions [1-2],chgrp,Changes the group that owns a file or folder,chgrp developers file.txt
+Concepts,Assigning permissions [1-2],*,"Wildcard that matches anything, to select several files at once",ls *.txt
+Concepts,Assigning permissions [2-2],useradd,Creates a new user on the system,sudo useradd john
+Concepts,Assigning permissions [2-2],passwd,Sets or changes a user's password,sudo passwd john
+Concepts,Assigning permissions [2-2],chown,Changes the owner and/or owning group of a file or folder,sudo chown john:developers file.txt
+Concepts,Assigning permissions [2-2],groupadd,Creates a new group on the system,sudo groupadd developers
+Concepts,Assigning permissions [2-2],usermod,"Modifies an existing user's properties (group, home, shell)",sudo usermod -s /bin/zsh john
+Concepts,File attributes - chattr and lsattr,cp,Copies files or folders from one place to another,cp file.txt copy.txt
+Concepts,File attributes - chattr and lsattr,lsattr,Shows a file's special attributes (beyond the normal permissions),lsattr file.txt
+Concepts,File attributes - chattr and lsattr,chattr,Changes a file's special attributes (for example making it immutable),sudo chattr +i file.txt
+Concepts,Special permissions - SUID and SGID,xargs,Takes a command's output and uses it as the arguments of another command,"find . -name ""*.log"" | xargs ls -l"
+Concepts,Special permissions - SUID and SGID,find,"Searches for files and folders by criteria (name, type, permissions, date, etc.)","find /home -name ""*.txt"""
+Concepts,Special privileges - Capabilities,getcap,Shows the capabilities assigned to a file,getcap /usr/bin/ping
+Concepts,Special privileges - Capabilities,setcap,Assigns specific capabilities to a file without granting full root privileges,sudo setcap cap_net_raw+ep /usr/bin/ping
+Concepts,Special privileges - Capabilities,!$,"Stands for the last argument of the previous command, so you can reuse it",mkdir project  then  cd !$
+Concepts,Using .bashrc and .zshrc,hostname,Shows or changes the machine's network name,hostname
+Concepts,Using .bashrc and .zshrc,ifconfig,Shows and configures network interfaces (the IP of each card),ifconfig eth0
+Concepts,Using .bashrc and .zshrc,iwconfig,"Like ifconfig, but for wireless (Wi-Fi) interfaces",iwconfig wlan0
+Concepts,Using .bashrc and .zshrc,awk,Processes and filters text by columns,awk '{print $2}' data.txt
+Concepts,Using .bashrc and .zshrc,cut,"Extracts parts of a line of text, splitting it by a delimiter","cut -d "":"" -f 1 /etc/passwd"
+Concepts,Updating and upgrading the system,parrot-upgrade,Safely upgrades Parrot OS without breaking its own components,sudo parrot-upgrade
+Concepts,Updating and upgrading the system,reboot,Restarts the machine,sudo reboot
+Concepts,Updating and upgrading the system,apt,Debian's package manager: refreshes the package list (update) and installs available updates (upgrade),sudo apt update
+Concepts,System-wide searches,neofetch,"Shows system info (kernel, RAM, CPU, distro logo) in a visual way",neofetch
+Concepts,Reading text output,tail,"Shows the last lines of a file (10 by default), useful for logs",tail /var/log/syslog
+Labs,SSH connections,ssh,"Connects remotely and securely to another machine over the network, using a password or an SSH key",ssh user@192.168.1.10
+Labs,SSH connections,sshpass,Passes the SSH password directly in the command; handy for automation,sshpass -p 'my_password' ssh user@192.168.1.10
+Labs,SSH connections,export,"Turns a variable into an environment variable, available to other processes started from that terminal",export TERM=xterm
+Labs,Reading special files [1-2],rev,"Reverses the characters of each line, showing the text backwards","echo ""hello"" | rev"
+Labs,Reading special files [1-2],tr,Translates or replaces characters of the incoming text with others,"echo ""a:b:c"" | tr ':' ' '"
+Labs,Reading special files [1-2],head,Shows the first lines of a file or text (10 by default),head -n 1 file.txt
+Labs,Hidden directories and files,file,"Analyzes a file and tells you what kind of content it has, regardless of its extension",file image.png
+Labs,Data filtering methods [1-2],sed,"Finds, replaces, deletes or modifies text in a file or stream, usually with regular expressions",sed 's/old/new/g' file.txt
+Labs,Data filtering methods [2-2],sort,"Sorts the lines of a file or text, alphabetically or numerically",sort names.txt
+Labs,Data filtering methods [2-2],uniq,Removes consecutive duplicate lines; usually used after sort,sort names.txt | uniq
+Labs,Reading binary files,strings,Shows the readable text strings (ASCII) inside a binary file; useful for finding hidden info,strings program.bin
+Labs,Base64 encoding and decoding,base64,"Encodes text or a file to Base64, or decodes it back to its original form, depending on the flag","echo ""hello"" | base64"
+Labs,Recursive decompression,xxd,Shows a file's contents in hexadecimal,xxd file.bin
+Labs,Recursive decompression,tee,Shows a command's output on screen and saves it to a file at the same time,ls | tee list.txt
+Labs,Recursive decompression,sponge,"Reads all of its input before writing it to a file, avoiding problems when overwriting the same file you're reading",sort data.txt | sponge data.txt
+Labs,Recursive decompression,ghex,Hex editor with a graphical interface to view and modify a file's bytes,ghex file.bin
+Labs,Recursive decompression,7z,Compresses and extracts .7z archives,7z a backup.7z folder/
+Labs,Recursive decompression,sleep,Pauses for a given number of seconds,sleep 5
+Labs,Recursive decompression,!?,Finds the most recent command in your history containing the given text and runs it again,!?ssh
+Labs,SSH key pairs and connections,ssh-keygen,Generates an SSH key pair (public and private) to log in without a password,ssh-keygen -t ed25519
+Labs,SSH key pairs and connections,ssh-copy-id,Copies your SSH public key to a remote server's authorized_keys,ssh-copy-id user@192.168.1.10
+Labs,Making connections with netcat,nc,"Netcat: creates manual TCP/UDP connections to send and receive data, scan ports or open remote shells",nc 192.168.1.10 80
+Labs,Making connections with netcat,ss,"Shows information about active network sockets, a modern alternative to netstat",ss
+Labs,Making connections with netcat,lsof,"Lists the files opened by running processes, including network connections",lsof /var/log/syslog
+Labs,Making connections with netcat,ps,Shows the processes running on the system,ps
+Labs,Making connections with netcat,bc,"Terminal calculator; does arithmetic and converts numbers between bases (hexadecimal, decimal)","echo ""obase=10; ibase=16; FF"" | bc"
+Labs,Encrypted connections,ncat,Improved netcat (from the Nmap project) with SSL/TLS encryption and authentication support,ncat 192.168.1.10 4444
+Labs,Finding differences between files,diff,Compares two files line by line and shows the differences between them,diff file1.txt file2.txt
+Labs,Abusing SUID to switch users,bash,"Starts a new Bash shell, to get an interactive shell, run scripts or escape restricted shells",bash
+Labs,Abusing Cron jobs [1-3],crontab,"Lets you view, create and edit a user's Cron jobs (scheduled tasks)",crontab -l
+Labs,Abusing Cron jobs [2-3],md5sum,"Calculates the MD5 hash of a file or input, useful to check whether its content has changed",md5sum file.txt
+Labs,Abusing Cron jobs [3-3],stat,"Shows detailed info about a file or directory: permissions, size and access/modification dates",stat file.txt
+Labs,Abusing Cron jobs [3-3],timeout,Runs a command and kills it automatically if it goes over the given time,timeout 5 ping 8.8.8.8
+Labs,Abusing Cron jobs [3-3],watch,Runs a command repeatedly at regular intervals and shows its updated output,watch ls -l /tmp
+Labs,Escaping a command's context,more,"Shows a command's output or a file one page at a time (space to advance, q to quit)",cat /etc/passwd | more
+Labs,Working with GitHub projects [1-5],git clone,"Downloads a full copy of a remote repository (like GitHub), with all its files and history",git clone https://github.com/user/project.git
+Labs,Working with GitHub projects [2-5],git log,"Lists every commit in the project with its ID, author, date and message",git log
+Labs,Working with GitHub projects [2-5],git show,Shows the details and changes applied in a specific commit,git show a1b2c3d
+Labs,Working with GitHub projects [3-5],git branch,"Creates, lists, deletes and renames branches; it doesn't switch or merge them",git branch
+Labs,Working with GitHub projects [3-5],git checkout,Switches to another branch or takes the project back to a previous commit,git checkout main
+Labs,Working with GitHub projects [4-5],git tag,Lists all the tags in the repo; a tag is a name that permanently marks a specific commit,git tag
+Labs,Working with GitHub projects [5-5],git add,Adds files to the staging area so they're included in the next commit,git add file.txt
+Labs,Working with GitHub projects [5-5],git commit,"Saves the staged changes, creating a new version of the project in the local repo","git commit -m ""First change"""
+Labs,Working with GitHub projects [5-5],git push,Uploads commits from the local repo to the remote repo,git push origin master

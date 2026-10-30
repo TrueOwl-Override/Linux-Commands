@@ -1,643 +1,575 @@
 # 🧪 Labs
 
-> Comandos aprendidos resolviendo laboratorios (OverTheWire Bandit): SSH, filtrado, binarios, cron, git y más.
+> Commands learned solving labs (OverTheWire Bandit): SSH, filtering, binaries, cron, git and more.
 
-**58** comandos · **65** parámetros · **29** temas  ·  [⬅ Volver al índice](../README.md)
+**44** commands · **55** parameters · **26** topics  ·  [⬅ Back to index](../README.md)
 
-## Temas
+## Topics
 
-1. [Conexiones SSH](#conexiones-ssh)
-2. [Lectura de archivos especiales [1-2]](#lectura-de-archivos-especiales-1-2)
-3. [Lectura de archivos especiales [2-2]](#lectura-de-archivos-especiales-2-2)
-4. [Directorios y archivos ocultos](#directorios-y-archivos-ocultos)
-5. [Búsquedas precisas de archivos [1-2]](#busquedas-precisas-de-archivos-1-2)
-6. [Métodos de filtrado de datos [1-2]](#metodos-de-filtrado-de-datos-1-2)
-7. [Método de filtrado de datos [2-2]](#metodo-de-filtrado-de-datos-2-2)
-8. [Interpretación de archivos binarios](#interpretacion-de-archivos-binarios)
-9. [Codificación y decodificación en base64](#codificacion-y-decodificacion-en-base64)
-10. [Cifrado césar y uso de tr](#cifrado-cesar-y-uso-de-tr)
-11. [Descompresor recursivo en Bash](#descompresor-recursivo-en-bash)
-12. [Pares de claves y conexiones SSH](#pares-de-claves-y-conexiones-ssh)
-13. [Uso de netcat para realizar conexiones](#uso-de-netcat-para-realizar-conexiones)
-14. [Uso de conexiones encriptadas](#uso-de-conexiones-encriptadas)
-15. [Creando nuestros propios escáneres en Bash](#creando-nuestros-propios-escaneres-en-bash)
-16. [Ejecución de comandos por SSH](#ejecucion-de-comandos-por-ssh)
-17. [Detección de diferencias entre archivos](#deteccion-de-diferencias-entre-archivos)
-18. [Abusando de privilegio SUID para migrar de usuario](#abusando-de-privilegio-suid-para-migrar-de-usuario)
-19. [Abusando de tareas Cron [1-3]](#abusando-de-tareas-cron-1-3)
-20. [Abusando de tareas Cron [2-3]](#abusando-de-tareas-cron-2-3)
-21. [Abusando de tareas Cron [3-3]](#abusando-de-tareas-cron-3-3)
-22. [Escapando del contexto de un comando](#escapando-del-contexto-de-un-comando)
-23. [Fuerza bruta aplicada a conexiones](#fuerza-bruta-aplicada-a-conexiones)
-24. [Operando con proyectos de Github [1-5]](#operando-con-proyectos-de-github-1-5)
-25. [Operando con proyectos de Github [2-5]](#operando-con-proyectos-de-github-2-5)
-26. [Operando con proyectos de Github [3-5]](#operando-con-proyectos-de-github-3-5)
-27. [Operando con proyectos de Github [4-5]](#operando-con-proyectos-de-github-4-5)
-28. [Operando con proyectos de Github [5-5]](#operando-con-proyectos-de-github-5-5)
-29. [Argumentos posicionales en Bash](#argumentos-posicionales-en-bash)
+1. [SSH connections](#ssh-connections)
+2. [Reading special files [1-2]](#reading-special-files-1-2)
+3. [Reading special files [2-2]](#reading-special-files-2-2)
+4. [Hidden directories and files](#hidden-directories-and-files)
+5. [Precise file searches [1-2]](#precise-file-searches-1-2)
+6. [Data filtering methods [1-2]](#data-filtering-methods-1-2)
+7. [Data filtering methods [2-2]](#data-filtering-methods-2-2)
+8. [Reading binary files](#reading-binary-files)
+9. [Base64 encoding and decoding](#base64-encoding-and-decoding)
+10. [Caesar cipher and tr](#caesar-cipher-and-tr)
+11. [Recursive decompression](#recursive-decompression)
+12. [SSH key pairs and connections](#ssh-key-pairs-and-connections)
+13. [Making connections with netcat](#making-connections-with-netcat)
+14. [Encrypted connections](#encrypted-connections)
+15. [Running commands over SSH](#running-commands-over-ssh)
+16. [Finding differences between files](#finding-differences-between-files)
+17. [Abusing SUID to switch users](#abusing-suid-to-switch-users)
+18. [Abusing Cron jobs [1-3]](#abusing-cron-jobs-1-3)
+19. [Abusing Cron jobs [2-3]](#abusing-cron-jobs-2-3)
+20. [Abusing Cron jobs [3-3]](#abusing-cron-jobs-3-3)
+21. [Escaping a command's context](#escaping-a-command-s-context)
+22. [Working with GitHub projects [1-5]](#working-with-github-projects-1-5)
+23. [Working with GitHub projects [2-5]](#working-with-github-projects-2-5)
+24. [Working with GitHub projects [3-5]](#working-with-github-projects-3-5)
+25. [Working with GitHub projects [4-5]](#working-with-github-projects-4-5)
+26. [Working with GitHub projects [5-5]](#working-with-github-projects-5-5)
 
 ---
 
-<a id="conexiones-ssh"></a>
+<a id="ssh-connections"></a>
 
-## Conexiones SSH
+## SSH connections
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `ssh` | Conecta de forma remota y segura a otro equipo por la red, con usuario y contraseña o clave SSH | `ssh usuario@192.168.1.10` |
-| `sshpass` | Pasa la contraseña de una conexión SSH directamente en el comando; útil para automatizar scripts | `sshpass -p 'mi_clave' ssh usuario@192.168.1.10` |
-| `export` | Convierte una variable en variable de entorno, disponible para otros procesos abiertos desde esa terminal | `export TERM=xterm` |
+| `ssh` | Connects remotely and securely to another machine over the network, using a password or an SSH key | `ssh user@192.168.1.10` |
+| `sshpass` | Passes the SSH password directly in the command; handy for automation | `sshpass -p 'my_password' ssh user@192.168.1.10` |
+| `export` | Turns a variable into an environment variable, available to other processes started from that terminal | `export TERM=xterm` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (4)</b></summary>
+<summary><b>🔧 Parameters & usage (4)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ssh` | `-p` | Especifica el puerto al que conectarse cuando el servidor SSH no usa el puerto por defecto (22) | `ssh -p 2222 usuario@192.168.1.10` |
-| `export` | `TERM=xterm` | Define el tipo de terminal; útil ante problemas de compatibilidad en una conexión remota | `export TERM=xterm` |
-| `sshpass` | `-p` | Indica la contraseña directamente en el comando para no escribirla manualmente al conectarse por SSH | `sshpass -p 'mi_clave' ssh usuario@192.168.1.10` |
-| `ssh` | `bandit0@bandit.labs.overthewire.org -p 2220` | Se conecta al servidor de Bandit con el usuario bandit0 en el puerto 2220 en vez del 22 | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
+| `ssh` | `-p` | Sets the port to connect to when the SSH server doesn't use the default one (22) | `ssh -p 2222 user@192.168.1.10` |
+| `export` | `TERM=xterm` | Sets the terminal type; useful when a remote connection has compatibility issues | `export TERM=xterm` |
+| `sshpass` | `-p` | Gives the password directly in the command so you don't have to type it when connecting over SSH | `sshpass -p 'my_password' ssh user@192.168.1.10` |
+| `ssh` | `bandit0@bandit.labs.overthewire.org -p 2220` | Connects to the Bandit server as bandit0 on port 2220 instead of 22 | `ssh bandit0@bandit.labs.overthewire.org -p 2220` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="lectura-de-archivos-especiales-1-2"></a>
+<a id="reading-special-files-1-2"></a>
 
-## Lectura de archivos especiales [1-2]
+## Reading special files [1-2]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `rev` | Invierte el orden de los caracteres de cada línea, mostrando el texto al revés | `echo "hola" \| rev` |
-| `tr` | Traduce o reemplaza caracteres del texto que recibe por otros | `echo "a:b:c" \| tr ':' ' '` |
-| `head` | Muestra las primeras líneas de un archivo o texto (10 por defecto) | `head -n 1 archivo.txt` |
+| `rev` | Reverses the characters of each line, showing the text backwards | `echo "hello" \| rev` |
+| `tr` | Translates or replaces characters of the incoming text with others | `echo "a:b:c" \| tr ':' ' '` |
+| `head` | Shows the first lines of a file or text (10 by default) | `head -n 1 file.txt` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (10)</b></summary>
+<summary><b>🔧 Parameters & usage (10)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `cat` | `/home/bandit1/-` | Lee el archivo llamado "-" con su ruta absoluta, evitando que cat lo confunda con la entrada estándar | `cat /home/bandit1/-` |
-| `cat` | `./-` | Lee el archivo "-" indicando que está en el directorio actual, evitando la confusión con stdin | `cat ./-` |
-| `cat` | `$(pwd)/-` | Combina pwd (ruta actual) con el nombre del archivo; mismo efecto que la ruta absoluta | `cat $(pwd)/-` |
-| `grep` | `-r "\w"` | Busca recursivamente líneas con al menos un carácter alfanumérico para encontrar contenido en archivos de cualquier carpeta | `grep -r "\w" /home/usuario/` |
-| `cut` | `-d ':' -f 2` | Divide cada línea usando ":" como delimitador y extrae solo el segundo campo | `echo "a:b:c" \| cut -d ':' -f 2` |
-| `tr` | `':' ' '` | Reemplaza cada ":" por un espacio en el texto procesado | `echo "a:b:c" \| tr ':' ' '` |
-| `awk` | `'{print $2}' FS=":"` | Usa ":" como separador de campo (FS) e imprime la segunda columna de cada línea | `echo "a:b:c" \| awk '{print $2}' FS=":"` |
-| `awk` | `'NF{print $NF}'` | Imprime el último campo de cada línea; NF es el número de campos y $NF el valor del último | `echo "uno dos tres" \| awk 'NF{print $NF}'` |
-| `tail` | `-n 1` | Muestra únicamente la última línea del archivo o texto procesado | `tail -n 1 archivo.txt` |
-| `head` | `-n 1` | Muestra únicamente la primera línea del archivo o texto procesado | `head -n 1 archivo.txt` |
+| `cat` | `/home/bandit1/-` | Reads the file named "-" by its absolute path, so cat doesn't confuse it with standard input | `cat /home/bandit1/-` |
+| `cat` | `./-` | Reads the "-" file by pointing to the current directory, avoiding the stdin confusion | `cat ./-` |
+| `cat` | `$(pwd)/-` | Combines pwd (the current path) with the file name; same effect as the absolute path | `cat $(pwd)/-` |
+| `grep` | `-r "\w"` | Recursively finds lines with at least one alphanumeric character to locate content in files in any folder | `grep -r "\w" /home/user/` |
+| `cut` | `-d ':' -f 2` | Splits each line using ":" as the delimiter and extracts only the second field | `echo "a:b:c" \| cut -d ':' -f 2` |
+| `tr` | `':' ' '` | Replaces every ":" with a space in the processed text | `echo "a:b:c" \| tr ':' ' '` |
+| `awk` | `'{print $2}' FS=":"` | Uses ":" as the field separator (FS) and prints the second column of each line | `echo "a:b:c" \| awk '{print $2}' FS=":"` |
+| `awk` | `'NF{print $NF}'` | Prints the last field of each line; NF is the number of fields and $NF the value of the last one | `echo "one two three" \| awk 'NF{print $NF}'` |
+| `tail` | `-n 1` | Shows only the last line of the file or text | `tail -n 1 file.txt` |
+| `head` | `-n 1` | Shows only the first line of the file or text | `head -n 1 file.txt` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="lectura-de-archivos-especiales-2-2"></a>
+<a id="reading-special-files-2-2"></a>
 
-## Lectura de archivos especiales [2-2]
+## Reading special files [2-2]
 
 <details open>
-<summary><b>🔧 Parámetros y usos (4)</b></summary>
+<summary><b>🔧 Parameters & usage (4)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `cat` | `"spaces in this filename"` | Lee un archivo con espacios usando comillas para que se interprete como un solo nombre | `cat "spaces in this filename"` |
-| `cat` | `spaces\ in\ this\ filename` | Lee un archivo con espacios escapando cada espacio con barra invertida para que no sean separadores de argumentos | `cat spaces\ in\ this\ filename` |
-| `cat` | `s*` | Usa un comodín para completar el nombre automáticamente, siempre que no haya otros archivos que empiecen igual | `cat s*` |
-| `cat` | `home/bandit/s*` | Igual que el anterior, especificando la ruta donde se encuentra el archivo | `cat home/bandit/s*` |
+| `cat` | `"spaces in this filename"` | Reads a file with spaces by wrapping its name in quotes so it's treated as a single name | `cat "spaces in this filename"` |
+| `cat` | `spaces\ in\ this\ filename` | Reads a file with spaces by escaping each space with a backslash so they don't split the arguments | `cat spaces\ in\ this\ filename` |
+| `cat` | `s*` | Uses a wildcard to complete the name automatically, as long as no other file starts the same way | `cat s*` |
+| `cat` | `home/bandit/s*` | Same as above, but specifying the path where the file is | `cat home/bandit/s*` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="directorios-y-archivos-ocultos"></a>
+<a id="hidden-directories-and-files"></a>
 
-## Directorios y archivos ocultos
+## Hidden directories and files
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `file` | Analiza un archivo y muestra qué tipo de contenido tiene, sin importar su extensión | `file imagen.png` |
+| `file` | Analyzes a file and tells you what kind of content it has, regardless of its extension | `file image.png` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (2)</b></summary>
+<summary><b>🔧 Parameters & usage (2)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `find` | `.` | Lista todos los archivos y carpetas del directorio actual, incluyendo subdirectorios | `find .` |
-| `grep` | `-vE "bashrc\\|profile"` | Muestra las líneas que NO coinciden con "bashrc" ni "profile"; -v invierte la coincidencia y -E permite regex extendidas (\\| significa "o") | `ls -a \| grep -vE "bashrc\|profile"` |
+| `find` | `.` | Lists every file and folder in the current directory, including subdirectories | `find .` |
+| `grep` | `-vE "bashrc\\|profile"` | Shows the lines that do NOT match "bashrc" or "profile"; -v inverts the match and -E enables extended regex (\\| means "or") | `ls -a \| grep -vE "bashrc\|profile"` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="busquedas-precisas-de-archivos-1-2"></a>
+<a id="precise-file-searches-1-2"></a>
 
-## Búsquedas precisas de archivos [1-2]
+## Precise file searches [1-2]
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `find` | `-size` | Filtra la búsqueda según el tamaño del archivo | `find -size 1033c` |
+| `find` | `-size` | Filters the search by file size | `find -size 1033c` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="metodos-de-filtrado-de-datos-1-2"></a>
+<a id="data-filtering-methods-1-2"></a>
 
-## Métodos de filtrado de datos [1-2]
+## Data filtering methods [1-2]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `sed` | Busca, reemplaza, elimina o modifica texto de un archivo o flujo de datos, generalmente con expresiones regulares | `sed 's/viejo/nuevo/g' archivo.txt` |
+| `sed` | Finds, replaces, deletes or modifies text in a file or stream, usually with regular expressions | `sed 's/old/new/g' file.txt` |
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="metodo-de-filtrado-de-datos-2-2"></a>
+<a id="data-filtering-methods-2-2"></a>
 
-## Método de filtrado de datos [2-2]
+## Data filtering methods [2-2]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `sort` | Ordena las líneas de un archivo o texto, alfabética o numéricamente | `sort nombres.txt` |
-| `uniq` | Elimina líneas duplicadas consecutivas; normalmente se usa después de sort | `sort nombres.txt \| uniq` |
+| `sort` | Sorts the lines of a file or text, alphabetically or numerically | `sort names.txt` |
+| `uniq` | Removes consecutive duplicate lines; usually used after sort | `sort names.txt \| uniq` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `uniq` | `-u` | Muestra solo las líneas completamente únicas, que no se repiten en el texto | `sort datos.txt \| uniq -u` |
+| `uniq` | `-u` | Shows only completely unique lines, the ones that never repeat | `sort data.txt \| uniq -u` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="interpretacion-de-archivos-binarios"></a>
+<a id="reading-binary-files"></a>
 
-## Interpretación de archivos binarios
+## Reading binary files
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `strings` | Muestra las cadenas de texto legible (ASCII) dentro de un archivo binario; útil para hallar información oculta | `strings programa.bin` |
+| `strings` | Shows the readable text strings (ASCII) inside a binary file; useful for finding hidden info | `strings program.bin` |
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="codificacion-y-decodificacion-en-base64"></a>
+<a id="base64-encoding-and-decoding"></a>
 
-## Codificación y decodificación en base64
+## Base64 encoding and decoding
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `base64` | Convierte un texto o archivo a formato Base64, o lo decodifica de vuelta a su forma original, según el parámetro usado | `echo "hola" \| base64` |
+| `base64` | Encodes text or a file to Base64, or decodes it back to its original form, depending on the flag | `echo "hello" \| base64` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `base64` | `-d` | Decodifica un texto en Base64 devolviéndolo a su forma original | `echo "aG9sYQ==" \| base64 -d` |
+| `base64` | `-d` | Decodes Base64 text back to its original form | `echo "aG9sYQ==" \| base64 -d` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="cifrado-cesar-y-uso-de-tr"></a>
+<a id="caesar-cipher-and-tr"></a>
 
-## Cifrado césar y uso de tr
+## Caesar cipher and tr
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `tr` | `'[A-Za-z]' '[N-ZA-Mn-za-m]'` | Reemplaza cada letra por la que está 13 posiciones adelante, aplicando el cifrado ROT13 | `echo "Uryyb" \| tr '[A-Za-z]' '[N-ZA-Mn-za-m]'` |
+| `tr` | `'[A-Za-z]' '[N-ZA-Mn-za-m]'` | Replaces each letter with the one 13 positions ahead, applying the ROT13 cipher | `echo "Uryyb" \| tr '[A-Za-z]' '[N-ZA-Mn-za-m]'` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="descompresor-recursivo-en-bash"></a>
+<a id="recursive-decompression"></a>
 
-## Descompresor recursivo en Bash
+## Recursive decompression
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `xxd` | Muestra el contenido de un archivo en formato hexadecimal | `xxd archivo.bin` |
-| `tee` | Muestra la salida de un comando en pantalla y la guarda en un archivo a la vez | `ls \| tee lista.txt` |
-| `sponge` | Lee toda la entrada antes de escribirla en un archivo, evitando problemas al sobrescribir el mismo archivo leído | `sort datos.txt \| sponge datos.txt` |
-| `ghex` | Editor hexadecimal con interfaz gráfica para ver y modificar bytes de un archivo | `ghex archivo.bin` |
-| `7z` | Comprime y descomprime archivos en formato .7z | `7z a respaldo.7z carpeta/` |
-| `sleep` | Pausa la ejecución del script un tiempo determinado en segundos | `sleep 5` |
-| `trap` | Captura una señal (como Ctrl+C) y ejecuta una función en vez de terminar el script de inmediato | `trap ctrl_c INT` |
-| `!?` | Busca en el historial el comando más reciente que contenga el texto indicado y lo vuelve a ejecutar | `!?ssh` |
-| `while` | Bucle que repite un bloque de código mientras se cumpla una condición | `while [ $i -lt 5 ]; do echo $i; i=$((i+1)); done` |
+| `xxd` | Shows a file's contents in hexadecimal | `xxd file.bin` |
+| `tee` | Shows a command's output on screen and saves it to a file at the same time | `ls \| tee list.txt` |
+| `sponge` | Reads all of its input before writing it to a file, avoiding problems when overwriting the same file you're reading | `sort data.txt \| sponge data.txt` |
+| `ghex` | Hex editor with a graphical interface to view and modify a file's bytes | `ghex file.bin` |
+| `7z` | Compresses and extracts .7z archives | `7z a backup.7z folder/` |
+| `sleep` | Pauses for a given number of seconds | `sleep 5` |
+| `!?` | Finds the most recent command in your history containing the given text and runs it again | `!?ssh` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (9)</b></summary>
+<summary><b>🔧 Parameters & usage (5)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `xxd` | `-p` | Muestra la salida en hexadecimal plano, sin direcciones ni texto al lado | `xxd -p archivo.bin` |
-| `xxd` | `-s` | Salta a un offset específico del archivo antes de mostrarlo en hexadecimal | `xxd -s 16 archivo.bin` |
-| `xxd` | `-r` | Revierte un volcado hexadecimal de vuelta a binario | `xxd -r datos.hex salida.bin` |
-| `7z` | `l` | Lista el contenido de un archivo comprimido sin extraerlo | `7z l respaldo.7z` |
-| `7z` | `x` | Extrae el contenido de un archivo comprimido respetando la estructura de carpetas | `7z x respaldo.7z` |
-| `trap` | `ctrl_c INT` | Captura la señal Ctrl+C y ejecuta una función en vez de terminar el script de inmediato | `trap ctrl_c INT` |
-| `exit` | `1` | Termina el script con código de salida 1, indicando error | `exit 1` |
-| `function` | `ctrl_c(){}` | Define la función ctrl_c, que se ejecuta cuando trap captura Ctrl+C | `function ctrl_c(){ echo "Saliendo..."; exit 1; }` |
-| `while` | `[ ]; do; done` | Repite el bloque de código mientras la condición entre corchetes sea verdadera | `while [ -f archivo.gz ]; do gunzip archivo.gz; done` |
+| `xxd` | `-p` | Shows plain hexadecimal output, without addresses or text alongside | `xxd -p file.bin` |
+| `xxd` | `-s` | Skips to a specific offset in the file before showing it in hexadecimal | `xxd -s 16 file.bin` |
+| `xxd` | `-r` | Turns a hex dump back into binary | `xxd -r data.hex output.bin` |
+| `7z` | `l` | Lists an archive's contents without extracting it | `7z l backup.7z` |
+| `7z` | `x` | Extracts an archive's contents keeping its folder structure | `7z x backup.7z` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="pares-de-claves-y-conexiones-ssh"></a>
+<a id="ssh-key-pairs-and-connections"></a>
 
-## Pares de claves y conexiones SSH
+## SSH key pairs and connections
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `ssh-keygen` | Genera un par de claves SSH (pública y privada) para autenticarse sin contraseña | `ssh-keygen -t ed25519` |
-| `ssh-copy-id` | Copia la clave pública SSH generada hacia authorized_keys de un servidor remoto | `ssh-copy-id usuario@192.168.1.10` |
+| `ssh-keygen` | Generates an SSH key pair (public and private) to log in without a password | `ssh-keygen -t ed25519` |
+| `ssh-copy-id` | Copies your SSH public key to a remote server's authorized_keys | `ssh-copy-id user@192.168.1.10` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (3)</b></summary>
+<summary><b>🔧 Parameters & usage (3)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ssh-copy-id` | `-i` | Especifica el archivo de clave pública a copiar cuando hay varias claves | `ssh-copy-id -i ~/.ssh/id_ed25519.pub usuario@192.168.1.10` |
-| `ssh` | `-i` | Especifica el archivo de clave privada a usar para autenticarse por SSH | `ssh -i ~/.ssh/id_ed25519 usuario@192.168.1.10` |
-| `cat` | `~/.ssh/authorized_keys` | Archivo con las claves públicas SSH autorizadas para entrar a esa cuenta sin contraseña | `cat ~/.ssh/authorized_keys` |
+| `ssh-copy-id` | `-i` | Sets which public key file to copy when you have several keys | `ssh-copy-id -i ~/.ssh/id_ed25519.pub user@192.168.1.10` |
+| `ssh` | `-i` | Sets which private key file to use to authenticate over SSH | `ssh -i ~/.ssh/id_ed25519 user@192.168.1.10` |
+| `cat` | `~/.ssh/authorized_keys` | File with the SSH public keys allowed to log into that account without a password | `cat ~/.ssh/authorized_keys` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="uso-de-netcat-para-realizar-conexiones"></a>
+<a id="making-connections-with-netcat"></a>
 
-## Uso de netcat para realizar conexiones
+## Making connections with netcat
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `nc` | Herramienta de línea de comandos (netcat) para crear conexiones TCP/UDP manuales, enviar/recibir datos, escanear puertos o crear shells remotas | `nc 192.168.1.10 80` |
-| `ss` | Muestra información sobre los sockets de red activos, alternativa moderna a netstat | `ss` |
-| `lsof` | Muestra una lista de archivos abiertos por los procesos en ejecución, incluyendo conexiones de red | `lsof /var/log/syslog` |
-| `ps` | Muestra los procesos en ejecución en el sistema | `ps` |
-| `bc` | Calculadora de la terminal; permite hacer operaciones y convertir números entre bases (hexadecimal, decimal) | `echo "obase=10; ibase=16; FF" \| bc` |
-| `for` | Bucle que recorre una lista de elementos uno por uno y ejecuta un bloque de código por cada uno | `for i in $(seq 1 5); do echo $i; done` |
+| `nc` | Netcat: creates manual TCP/UDP connections to send and receive data, scan ports or open remote shells | `nc 192.168.1.10 80` |
+| `ss` | Shows information about active network sockets, a modern alternative to netstat | `ss` |
+| `lsof` | Lists the files opened by running processes, including network connections | `lsof /var/log/syslog` |
+| `ps` | Shows the processes running on the system | `ps` |
+| `bc` | Terminal calculator; does arithmetic and converts numbers between bases (hexadecimal, decimal) | `echo "obase=10; ibase=16; FF" \| bc` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (8)</b></summary>
+<summary><b>🔧 Parameters & usage (6)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ss` | `-nltp` | Muestra sockets en escucha TCP, sin resolver nombres, mostrando el proceso asociado | `sudo ss -nltp` |
-| `lsof` | `-i:` | Filtra la salida mostrando solo las conexiones relacionadas con el puerto especificado | `sudo lsof -i:80` |
-| `ps` | `-faux` | Muestra todos los procesos de todos los usuarios en formato detallado y jerárquico | `ps -faux` |
-| `ps` | `-eo command` | Muestra solo la columna del comando ejecutado por cada proceso | `ps -eo command` |
-| `echo` | `"obase=10; ibase=16; $hexNum" \| bc` | Convierte el valor hexadecimal de una variable a decimal usando bc | `hexNum="FF"; echo "obase=10; ibase=16; $hexNum" \| bc` |
-| `cat` | `/proc/net/tcp` | Archivo virtual con las conexiones TCP activas (IP, puertos y estado) en formato hexadecimal | `cat /proc/net/tcp` |
-| `while` | `read line; do; done` | Lee una entrada línea por línea y ejecuta el bloque de código por cada línea leída | `cat lista.txt \| while read line; do echo $line; done` |
-| `for` | `line in; do; done` | Recorre uno por uno los elementos de una lista y ejecuta el bloque por cada elemento | `for line in $(cat lista.txt); do echo $line; done` |
+| `ss` | `-nltp` | Shows listening TCP sockets without resolving names, including the process behind each one | `sudo ss -nltp` |
+| `lsof` | `-i:` | Filters the output to show only connections related to the given port | `sudo lsof -i:80` |
+| `ps` | `-faux` | Shows every process from every user in a detailed tree format | `ps -faux` |
+| `ps` | `-eo command` | Shows only the command column for each process | `ps -eo command` |
+| `echo` | `"obase=10; ibase=16; $hexNum" \| bc` | Converts a variable's hexadecimal value to decimal using bc | `hexNum="FF"; echo "obase=10; ibase=16; $hexNum" \| bc` |
+| `cat` | `/proc/net/tcp` | Virtual file with the active TCP connections (IPs, ports and state) in hexadecimal | `cat /proc/net/tcp` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="uso-de-conexiones-encriptadas"></a>
+<a id="encrypted-connections"></a>
 
-## Uso de conexiones encriptadas
+## Encrypted connections
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `ncat` | Versión mejorada de netcat (proyecto Nmap) con soporte para conexiones cifradas SSL/TLS y autenticación | `ncat 192.168.1.10 4444` |
+| `ncat` | Improved netcat (from the Nmap project) with SSL/TLS encryption and authentication support | `ncat 192.168.1.10 4444` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ncat` | `--ssl` | Cifra la conexión usando SSL/TLS para proteger los datos transmitidos | `ncat --ssl 192.168.1.10 443` |
+| `ncat` | `--ssl` | Encrypts the connection with SSL/TLS to protect the data being sent | `ncat --ssl 192.168.1.10 443` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="creando-nuestros-propios-escaneres-en-bash"></a>
+<a id="running-commands-over-ssh"></a>
 
-## Creando nuestros propios escáneres en Bash
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `seq` | Genera una secuencia de números dentro de un rango, útil para bucles o scripts | `seq 1 10` |
-| `mktemp` | Crea un archivo temporal con nombre único, evitando conflictos con otros archivos | `mktemp` |
-| `wait` | Espera a que terminen uno o varios procesos en segundo plano antes de continuar | `sleep 5 & wait` |
-| `tput` | Controla aspectos de la terminal, como ocultar o volver a mostrar el cursor | `tput civis` |
-| `(comando)` | Ejecuta el comando dentro de un subshell, en un proceso hijo separado del script principal | `(ping -c 1 192.168.1.1) &` |
-| `/dev/tcp/$ip/$port` | Ruta especial de Bash que abre una conexión TCP a la IP y puerto indicados como si fuera un archivo, sin netcat | `echo '' > /dev/tcp/127.0.0.1/22 && echo "abierto"` |
+## Running commands over SSH
 
 <details open>
-<summary><b>🔧 Parámetros y usos (4)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `mktemp` | `-d` | Crea una carpeta temporal en vez de un archivo, con nombre único | `mktemp -d` |
-| `timeout` | `1 bash -c ""` | Ejecuta un comando con un límite de tiempo (1 segundo); si no termina, se cancela | `timeout 1 bash -c "echo > /dev/tcp/127.0.0.1/22" && echo "abierto"` |
-| `tput` | `civis` | Oculta el cursor de la terminal | `tput civis` |
-| `tput` | `cnorm` | Vuelve a mostrar el cursor de la terminal en su forma normal | `tput cnorm` |
+| `ssh` | `user@host "command"` | Runs a command directly on the remote server when connecting, without loading a full interactive session or the user's bashrc | `ssh user@192.168.1.10 "ls -la"` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="ejecucion-de-comandos-por-ssh"></a>
+<a id="finding-differences-between-files"></a>
 
-## Ejecución de comandos por SSH
+## Finding differences between files
+
+| Command | What it does | Example |
+|:--|:--|:--|
+| `diff` | Compares two files line by line and shows the differences between them | `diff file1.txt file2.txt` |
+
+<sub>[⬆ Back to top](#topics)</sub>
+
+---
+
+<a id="abusing-suid-to-switch-users"></a>
+
+## Abusing SUID to switch users
+
+| Command | What it does | Example |
+|:--|:--|:--|
+| `bash` | Starts a new Bash shell, to get an interactive shell, run scripts or escape restricted shells | `bash` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ssh` | `usuario@host "comando"` | Ejecuta un comando directamente en el servidor remoto al conectar, sin cargar una sesión interactiva completa ni el bashrc del usuario | `ssh usuario@192.168.1.10 "ls -la"` |
+| `bash` | `-p` | Starts the shell in privileged mode so the effective UID/GID aren't reset; useful to keep privileges gained through SUID | `bash -p` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="deteccion-de-diferencias-entre-archivos"></a>
+<a id="abusing-cron-jobs-1-3"></a>
 
-## Detección de diferencias entre archivos
+## Abusing Cron jobs [1-3]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `diff` | Compara dos archivos línea por línea y muestra las diferencias entre ellos | `diff archivo1.txt archivo2.txt` |
-
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="abusando-de-privilegio-suid-para-migrar-de-usuario"></a>
-
-## Abusando de privilegio SUID para migrar de usuario
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `bash` | Inicia una nueva instancia del intérprete Bash, para abrir shell interactiva, ejecutar scripts o evadir shells limitadas | `bash` |
+| `crontab` | Lets you view, create and edit a user's Cron jobs (scheduled tasks) | `crontab -l` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (2)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `bash` | `-p` | Inicia la shell en modo privilegiado, evitando que se reseteen el UID/GID efectivos, útil para mantener privilegios obtenidos por SUID | `bash -p` |
+| `ls` | `/etc/cron.d` | Directory holding the configuration files of the system's Cron jobs | `ls -l /etc/cron.d` |
+| `crontab` | `* * * * * command` | Cron job format: Minute Hour Day-of-month Month Day-of-week Command; * means every value (every minute, hour, etc.) | `* * * * * /home/user/script.sh` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="abusando-de-tareas-cron-1-3"></a>
+<a id="abusing-cron-jobs-2-3"></a>
 
-## Abusando de tareas Cron [1-3]
+## Abusing Cron jobs [2-3]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `crontab` | Permite ver, crear y editar las tareas Cron (tareas programadas) de un usuario | `crontab -l` |
+| `md5sum` | Calculates the MD5 hash of a file or input, useful to check whether its content has changed | `md5sum file.txt` |
+
+<sub>[⬆ Back to top](#topics)</sub>
+
+---
+
+<a id="abusing-cron-jobs-3-3"></a>
+
+## Abusing Cron jobs [3-3]
+
+| Command | What it does | Example |
+|:--|:--|:--|
+| `stat` | Shows detailed info about a file or directory: permissions, size and access/modification dates | `stat file.txt` |
+| `timeout` | Runs a command and kills it automatically if it goes over the given time | `timeout 5 ping 8.8.8.8` |
+| `watch` | Runs a command repeatedly at regular intervals and shows its updated output | `watch ls -l /tmp` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (2)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `ls` | `/etc/cron.d` | Directorio donde se almacenan los archivos de configuración de las tareas Cron del sistema | `ls -l /etc/cron.d` |
-| `crontab` | `* * * * * comando` | Formato de una tarea Cron: Minuto Hora Día-del-mes Mes Día-de-la-semana Comando; el * significa todos los valores (cada minuto, hora, etc.) | `* * * * * /home/user/script.sh` |
+| `watch` | `-n 1` | Sets the interval in seconds between runs; here every 1 second | `watch -n 1 ls -l /tmp` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="abusando-de-tareas-cron-2-3"></a>
+<a id="escaping-a-command-s-context"></a>
 
-## Abusando de tareas Cron [2-3]
+## Escaping a command's context
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `md5sum` | Calcula y muestra el hash MD5 de un archivo o entrada, útil para comprobar si su contenido ha cambiado | `md5sum archivo.txt` |
-
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="abusando-de-tareas-cron-3-3"></a>
-
-## Abusando de tareas Cron [3-3]
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `stat` | Muestra información detallada de un archivo o directorio: permisos, tamaño y fechas de acceso y modificación | `stat archivo.txt` |
-| `timeout` | Ejecuta un comando y lo termina automáticamente si supera el tiempo especificado | `timeout 5 ping 8.8.8.8` |
-| `watch` | Ejecuta un comando de forma repetida a intervalos regulares y muestra su salida actualizada en pantalla | `watch ls -l /tmp` |
+| `more` | Shows a command's output or a file one page at a time (space to advance, q to quit) | `cat /etc/passwd \| more` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (3)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `watch` | `-n 1` | Define el intervalo en segundos entre cada ejecución del comando; en este caso cada 1 segundo | `watch -n 1 ls -l /tmp` |
+| `more` | `v` | From inside more, opens visual mode (the vi editor) on the content | `v (inside more)` |
+| `more` | `:set shell=/bin/bash` | Once in visual mode (after Esc + Shift + :), sets Bash as the shell to use | `:set shell=/bin/bash` |
+| `more` | `:shell` | Opens an interactive shell from visual mode, escaping more's context | `:shell` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="escapando-del-contexto-de-un-comando"></a>
+<a id="working-with-github-projects-1-5"></a>
 
-## Escapando del contexto de un comando
+## Working with GitHub projects [1-5]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `more` | Muestra la salida de un comando o archivo una página a la vez (espacio avanza, q sale) | `cat /etc/passwd \| more` |
+| `git clone` | Downloads a full copy of a remote repository (like GitHub), with all its files and history | `git clone https://github.com/user/project.git` |
+
+<sub>[⬆ Back to top](#topics)</sub>
+
+---
+
+<a id="working-with-github-projects-2-5"></a>
+
+## Working with GitHub projects [2-5]
+
+| Command | What it does | Example |
+|:--|:--|:--|
+| `git log` | Lists every commit in the project with its ID, author, date and message | `git log` |
+| `git show` | Shows the details and changes applied in a specific commit | `git show a1b2c3d` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (3)</b></summary>
+<summary><b>🔧 Parameters & usage (2)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `more` | `v` | Desde more, abre el modo visual (editor vi) sobre el contenido | `v (dentro de more)` |
-| `more` | `:set shell=/bin/bash` | Ya en el modo visual (tras Esc + Shift + :), define Bash como la shell a usar | `:set shell=/bin/bash` |
-| `more` | `:shell` | Abre una shell interactiva desde el modo visual, escapando del contexto de more | `:shell` |
+| `git show` | `(commit id)` | Shows every change applied in that commit | `git show a1b2c3d` |
+| `git checkout` | `(commit id)` | Takes the project back to that point in history, restoring the files that existed then | `git checkout a1b2c3d` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="fuerza-bruta-aplicada-a-conexiones"></a>
+<a id="working-with-github-projects-3-5"></a>
 
-## Fuerza bruta aplicada a conexiones
+## Working with GitHub projects [3-5]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `{0000..9999}` | Expansión de llaves: genera una secuencia de valores (aquí del 0000 al 9999), útil como secuenciador en bucles | `for i in {0000..9999}; do echo $i; done` |
-
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="operando-con-proyectos-de-github-1-5"></a>
-
-## Operando con proyectos de Github [1-5]
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `git clone` | Descarga una copia completa de un repositorio remoto (como GitHub), con todos sus archivos e historial | `git clone https://github.com/usuario/proyecto.git` |
-
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="operando-con-proyectos-de-github-2-5"></a>
-
-## Operando con proyectos de Github [2-5]
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `git log` | Lista todos los commits del proyecto con su identificador, autor, fecha y mensaje | `git log` |
-| `git show` | Muestra las propiedades y los cambios aplicados en un commit concreto | `git show a1b2c3d` |
+| `git branch` | Creates, lists, deletes and renames branches; it doesn't switch or merge them | `git branch` |
+| `git checkout` | Switches to another branch or takes the project back to a previous commit | `git checkout main` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (2)</b></summary>
+<summary><b>🔧 Parameters & usage (2)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `git show` | `(id del commit)` | Muestra todos los cambios que se aplicaron en ese commit | `git show a1b2c3d` |
-| `git checkout` | `(id del commit)` | Regresa el proyecto a ese punto de la historia, restaurando los archivos que existían entonces | `git checkout a1b2c3d` |
+| `git branch` | `-a` | Lists every branch in the project, both local and remote | `git branch -a` |
+| `git checkout` | `(branch name)` | Switches to the given branch by name | `git checkout develop` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="operando-con-proyectos-de-github-3-5"></a>
+<a id="working-with-github-projects-4-5"></a>
 
-## Operando con proyectos de Github [3-5]
+## Working with GitHub projects [4-5]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `git branch` | Crea, lista, elimina y renombra ramas; no sirve para cambiar de rama ni para unirlas | `git branch` |
-| `git checkout` | Cambia a otra rama o regresa el proyecto al estado de un commit anterior | `git checkout main` |
+| `git tag` | Lists all the tags in the repo; a tag is a name that permanently marks a specific commit | `git tag` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (2)</b></summary>
+<summary><b>🔧 Parameters & usage (1)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `git branch` | `-a` | Lista todas las ramas del proyecto, tanto locales como remotas | `git branch -a` |
-| `git checkout` | `(nombre de la rama)` | Cambia a la rama indicada por su nombre | `git checkout develop` |
+| `git show` | `(tag name)` | Shows info about the given tag and the commit it points to, with its changes | `git show v1.0` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>
 
 ---
 
-<a id="operando-con-proyectos-de-github-4-5"></a>
+<a id="working-with-github-projects-5-5"></a>
 
-## Operando con proyectos de Github [4-5]
+## Working with GitHub projects [5-5]
 
-| Comando | Qué hace | Ejemplo |
+| Command | What it does | Example |
 |:--|:--|:--|
-| `git tag` | Lista todas las etiquetas (tags) del repositorio; un tag es un nombre que marca de forma inalterable un commit específico | `git tag` |
+| `git add` | Adds files to the staging area so they're included in the next commit | `git add file.txt` |
+| `git commit` | Saves the staged changes, creating a new version of the project in the local repo | `git commit -m "First change"` |
+| `git push` | Uploads commits from the local repo to the remote repo | `git push origin master` |
 
 <details open>
-<summary><b>🔧 Parámetros y usos (1)</b></summary>
+<summary><b>🔧 Parameters & usage (3)</b></summary>
 
-| Comando | Parámetro | Qué hace | Ejemplo |
+| Command | Parameter | What it does | Example |
 |:--|:--|:--|:--|
-| `git show` | `(nombre del tag)` | Muestra la información del tag indicado y del commit al que apunta, con sus cambios | `git show v1.0` |
+| `git add` | `-f` | Forces a file into the staging area even if .gitignore ignores it | `git add -f key.txt` |
+| `git commit` | `-m "identifier"` | Sets the message that identifies the commit | `git commit -m "Add key.txt"` |
+| `git push` | `-u origin branch` | Pushes commits to the given branch on the origin remote and links it so later push/pull don't need it spelled out | `git push -u origin master` |
 
 </details>
 
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="operando-con-proyectos-de-github-5-5"></a>
-
-## Operando con proyectos de Github [5-5]
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `git add` | Agrega archivos al área de preparación para incluirlos en el próximo commit | `git add archivo.txt` |
-| `git commit` | Guarda los cambios preparados creando una nueva versión del proyecto en el repositorio local | `git commit -m "Primer cambio"` |
-| `git push` | Sube los commits del repositorio local al repositorio remoto | `git push origin master` |
-
-<details open>
-<summary><b>🔧 Parámetros y usos (3)</b></summary>
-
-| Comando | Parámetro | Qué hace | Ejemplo |
-|:--|:--|:--|:--|
-| `git add` | `-f` | Fuerza agregar el archivo al área de preparación aunque esté ignorado por el .gitignore | `git add -f key.txt` |
-| `git commit` | `-m "identifier"` | Define el mensaje que identifica al commit | `git commit -m "Agrego key.txt"` |
-| `git push` | `-u origin branch` | Sube los commits a la rama indicada del remoto origin y la deja vinculada para que los siguientes push/pull no necesiten especificarla | `git push -u origin master` |
-
-</details>
-
-<sub>[⬆ Arriba](#temas)</sub>
-
----
-
-<a id="argumentos-posicionales-en-bash"></a>
-
-## Argumentos posicionales en Bash
-
-| Comando | Qué hace | Ejemplo |
-|:--|:--|:--|
-| `$0` | Variable con el nombre del script que se invocó desde la terminal | `echo $0` |
-| `$1, $2...` | Primer, segundo (y así sucesivamente) argumento recibido desde la línea de comandos | `./script.sh hola mundo → echo $1` |
-| `$#` | Contiene el número de argumentos recibidos desde la línea de comandos | `echo "Recibí $# argumentos"` |
-| `$*` | Contiene todos los argumentos recibidos desde la línea de comandos en una sola variable | `echo "Argumentos: $*"` |
-
-<sub>[⬆ Arriba](#temas)</sub>
+<sub>[⬆ Back to top](#topics)</sub>

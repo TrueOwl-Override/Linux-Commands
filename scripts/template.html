@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -103,10 +103,10 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 0}
     <div class="brand"><span class="prompt">~$</span> linux-commands<span class="cursor"></span></div>
     <label class="search">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="Busca un comando, parámetro o descripción…" autocomplete="off" aria-label="Buscar">
+      <input id="q" type="search" placeholder="Search a command, parameter or description…" autocomplete="off" aria-label="Search">
       <kbd>/</kbd>
     </label>
-    <button class="iconbtn" id="theme" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+    <button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button>
   </div>
   <div class="chips" id="chips"></div>
 </header>
@@ -116,11 +116,11 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 0}
   <main>
     <div class="hero" id="hero"></div>
     <div id="content"></div>
-    <div class="empty" id="empty">😶 Nada coincide con tu búsqueda.</div>
-    <footer>Generado desde la hoja <i>Comandos de Linux</i> · <span class="mono">python3 scripts/build.py</span></footer>
+    <div class="empty" id="empty">😶 Nothing matches your search.</div>
+    <footer>Built from the <i>Linux Commands</i> sheet · <span class="mono">python3 scripts/build.py</span></footer>
   </main>
 </div>
-<button class="totop" onclick="scrollTo({top:0})" aria-label="Ir arriba">↑</button>
+<button class="totop" onclick="scrollTo({top:0})" aria-label="Back to top">↑</button>
 
 <script>
 const DATA = /*__DATA__*/null;
@@ -146,20 +146,20 @@ const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ
 function buildCards(t){
   const cards = [];
   const byCmd = new Map();
-  t.comandos.forEach(c => { const card = {name:c["Comando"], desc:c["Descripción"], ex:c["Ejemplo"], params:[], usage:false}; cards.push(card); if(!byCmd.has(card.name)) byCmd.set(card.name, card); });
-  t.parametros.forEach(p => {
-    let card = byCmd.get(p["Comando"]);
-    if (!card){ card = {name:p["Comando"], desc:"", ex:"", params:[], usage:true}; cards.push(card); byCmd.set(card.name, card); }
-    card.params.push({flag:p["Parámetro"], desc:p["Descripción"], ex:p["Ejemplo"]});
+  t.commands.forEach(c => { const card = {name:c["Command"], desc:c["Description"], ex:c["Example"], params:[], usage:false}; cards.push(card); if(!byCmd.has(card.name)) byCmd.set(card.name, card); });
+  t.parameters.forEach(p => {
+    let card = byCmd.get(p["Command"]);
+    if (!card){ card = {name:p["Command"], desc:"", ex:"", params:[], usage:true}; cards.push(card); byCmd.set(card.name, card); }
+    card.params.push({flag:p["Parameter"], desc:p["Description"], ex:p["Example"]});
   });
   cards.forEach(c => c.text = norm([c.name,c.desc,c.ex,...c.params.flatMap(p=>[p.flag,p.desc,p.ex])].join(" ")));
   return cards;
 }
 
-const exBlock = (ex) => ex ? `<div class="ex"><span class="t">${esc(ex)}</span><button class="copy" title="Copiar" aria-label="Copiar">⧉</button></div>` : "";
+const exBlock = (ex) => ex ? `<div class="ex"><span class="t">${esc(ex)}</span><button class="copy" title="Copy" aria-label="Copy">⧉</button></div>` : "";
 
 function cardHTML(c){
-  const params = c.params.length ? `<div class="params"><div class="lbl">${c.usage ? "Usos" : "Parámetros"}</div>${
+  const params = c.params.length ? `<div class="params"><div class="lbl">${c.usage ? "Usage" : "Parameters"}</div>${
     c.params.map(p=>`<div class="param"><code class="flag">${esc(p.flag)}</code><p>${esc(p.desc)}</p>${exBlock(p.ex)}</div>`).join("")}</div>` : "";
   return `<article class="card${c.usage?" usage":""}"><div class="name">${esc(c.name)}</div>${c.desc?`<p class="desc">${esc(c.desc)}</p>`:""}${exBlock(c.ex)}${params}</article>`;
 }
@@ -167,9 +167,9 @@ function cardHTML(c){
 // Render
 const temas = DATA.temas.map(t => ({...t, cards: buildCards(t)}));
 $("#hero").innerHTML = `
-  <div class="stat"><b>${DATA.stats.comandos}</b><span>comandos</span></div>
-  <div class="stat"><b>${DATA.stats.parametros}</b><span>parámetros</span></div>
-  <div class="stat"><b>${temas.length}</b><span>temas</span></div>`;
+  <div class="stat"><b>${DATA.stats.commands}</b><span>commands</span></div>
+  <div class="stat"><b>${DATA.stats.parameters}</b><span>parameters</span></div>
+  <div class="stat"><b>${temas.length}</b><span>topics</span></div>`;
 
 let html = "", toc = "";
 DATA.sections.forEach(s => {
@@ -236,7 +236,7 @@ function apply(){
   document.querySelectorAll(".sect").forEach(s => s.style.display = [...s.querySelectorAll(".tema")].some(t => t.style.display !== "none") ? "" : "none");
   document.querySelectorAll(".toc h4").forEach(h => h.style.display = document.querySelector(`.toc a[data-section="${h.dataset.section}"]:not(.hidden)`) ? "" : "none");
   $("#empty").style.display = shown ? "none" : "block";
-  $("#count").textContent = `${shown} tarjeta${shown === 1 ? "" : "s"}`;
+  $("#count").textContent = `${shown} card${shown === 1 ? "" : "s"}`;
 }
 $("#q").addEventListener("input", apply);
 document.addEventListener("keydown", e => {

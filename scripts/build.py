@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Genera README.md, notes/*.md y docs/index.html a partir de data/*.csv.
+"""Builds README.md, notes/*.md and docs/index.html from data/*.csv.
 
-Uso:  python3 scripts/build.py
-Edita los CSV (o vuelve a exportarlos desde Google Sheets) y vuelve a ejecutarlo.
+Usage:  python3 scripts/build.py
+Edit the CSV files (or re-export them from Google Sheets) and run it again.
 """
 import csv
 import json
@@ -14,9 +14,8 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 
 SECTIONS = OrderedDict([
-    ("Conceptos", {"emoji": "🧠", "desc": "Fundamentos de la terminal: usuarios, permisos, redirecciones, búsquedas y primeros scripts."}),
-    ("Labs", {"emoji": "🧪", "desc": "Comandos aprendidos resolviendo laboratorios (OverTheWire Bandit): SSH, filtrado, binarios, cron, git y más."}),
-    ("Scripting", {"emoji": "📜", "desc": "Herramientas para escribir scripts en Bash: opciones, condicionales, aritmética y peticiones HTTP."}),
+    ("Concepts", {"emoji": "🧠", "desc": "Terminal fundamentals: users, permissions, redirection, searching and package management."}),
+    ("Labs", {"emoji": "🧪", "desc": "Commands learned solving labs (OverTheWire Bandit): SSH, filtering, binaries, cron, git and more."}),
 ])
 
 
@@ -33,11 +32,11 @@ def slug(text):
     return text or "x"
 
 
-def code(text):
-    """Texto como código inline seguro dentro de una tabla Markdown."""
+def code(text, table=True):
+    """Text as inline code that is safe inside a Markdown table."""
     if not text:
         return ""
-    t = text.replace("|", "\\|")
+    t = text.replace("|", "\\|") if table else text
     fence = "``" if "`" in t else "`"
     pad = " " if fence == "``" else ""
     return f"{fence}{pad}{t}{pad}{fence}"
@@ -48,49 +47,49 @@ def cell(text):
 
 
 def build_model():
-    comandos = read("comandos.csv")
-    parametros = read("parametros.csv")
-    # Orden de temas: el de la hoja de comandos; los temas que solo aparecen en
-    # parámetros se insertan justo después del último tema visto, para respetar
-    # el orden del curso.
+    comandos = read("commands.csv")
+    parametros = read("parameters.csv")
+    # Topic order follows the commands sheet; topics that only appear in the
+    # parameters sheet are inserted right after the last topic seen, so the
+    # course order is kept.
     order = {s: [] for s in SECTIONS}
     for row in comandos:
-        if row["Tema"] not in order[row["Sección"]]:
-            order[row["Sección"]].append(row["Tema"])
+        if row["Topic"] not in order[row["Section"]]:
+            order[row["Section"]].append(row["Topic"])
     last = {}
     for row in parametros:
-        s, t = row["Sección"], row["Tema"]
+        s, t = row["Section"], row["Topic"]
         if t not in order[s]:
             base = t.split(" [")[0]
             siblings = [i for i, x in enumerate(order[s]) if x.split(" [")[0] == base]
-            if siblings:  # p. ej. "Tema [2-2]" va justo después de "Tema [1-2]"
+            if siblings:  # e.g. "Topic [2-2]" goes right after "Topic [1-2]"
                 idx = siblings[-1] + 1
             else:
                 idx = order[s].index(last[s]) + 1 if s in last else 0
             order[s].insert(idx, t)
         last[s] = t
     model = OrderedDict(
-        (s, OrderedDict((t, {"comandos": [], "parametros": []}) for t in order[s])) for s in SECTIONS
+        (s, OrderedDict((t, {"commands": [], "parameters": []}) for t in order[s])) for s in SECTIONS
     )
     for row in comandos:
-        model[row["Sección"]][row["Tema"]]["comandos"].append(row)
+        model[row["Section"]][row["Topic"]]["commands"].append(row)
     for row in parametros:
-        model[row["Sección"]][row["Tema"]]["parametros"].append(row)
+        model[row["Section"]][row["Topic"]]["parameters"].append(row)
     return comandos, parametros, model
 
 
 def section_md(section, temas):
     meta = SECTIONS[section]
-    n_c = sum(len(t["comandos"]) for t in temas.values())
-    n_p = sum(len(t["parametros"]) for t in temas.values())
+    n_c = sum(len(t["commands"]) for t in temas.values())
+    n_p = sum(len(t["parameters"]) for t in temas.values())
     out = [
         f"# {meta['emoji']} {section}",
         "",
         f"> {meta['desc']}",
         "",
-        f"**{n_c}** comandos · **{n_p}** parámetros · **{len(temas)}** temas  ·  [⬅ Volver al índice](../README.md)",
+        f"**{n_c}** commands · **{n_p}** parameters · **{len(temas)}** topics  ·  [⬅ Back to index](../README.md)",
         "",
-        "## Temas",
+        "## Topics",
         "",
     ]
     for i, tema in enumerate(temas, 1):
@@ -98,18 +97,18 @@ def section_md(section, temas):
     out.append("")
     for tema, data in temas.items():
         out += ["---", "", f'<a id="{slug(tema)}"></a>', "", f"## {tema}", ""]
-        if data["comandos"]:
-            out += ["| Comando | Qué hace | Ejemplo |", "|:--|:--|:--|"]
-            for c in data["comandos"]:
-                out.append(f"| {code(c['Comando'])} | {cell(c['Descripción'])} | {code(c['Ejemplo'])} |")
+        if data["commands"]:
+            out += ["| Command | What it does | Example |", "|:--|:--|:--|"]
+            for c in data["commands"]:
+                out.append(f"| {code(c['Command'])} | {cell(c['Description'])} | {code(c['Example'])} |")
             out.append("")
-        if data["parametros"]:
-            out += ["<details open>", f"<summary><b>🔧 Parámetros y usos ({len(data['parametros'])})</b></summary>", "",
-                    "| Comando | Parámetro | Qué hace | Ejemplo |", "|:--|:--|:--|:--|"]
-            for p in data["parametros"]:
-                out.append(f"| {code(p['Comando'])} | {code(p['Parámetro'])} | {cell(p['Descripción'])} | {code(p['Ejemplo'])} |")
+        if data["parameters"]:
+            out += ["<details open>", f"<summary><b>🔧 Parameters & usage ({len(data['parameters'])})</b></summary>", "",
+                    "| Command | Parameter | What it does | Example |", "|:--|:--|:--|:--|"]
+            for p in data["parameters"]:
+                out.append(f"| {code(p['Command'])} | {code(p['Parameter'])} | {cell(p['Description'])} | {code(p['Example'])} |")
             out += ["", "</details>", ""]
-        out += ["<sub>[⬆ Arriba](#temas)</sub>", ""]
+        out += ["<sub>[⬆ Back to top](#topics)</sub>", ""]
     return "\n".join(out)
 
 
@@ -119,57 +118,57 @@ def readme_md(comandos, parametros, model):
         "",
         "# 🐧 Linux Commands",
         "",
-        "**Mis apuntes de comandos de Linux y Bash, organizados por tema, con ejemplos listos para copiar.**",
+        "**My Linux command notes, organized by topic, with copy-ready examples.**",
         "",
-        f"![Comandos](https://img.shields.io/badge/comandos-{len(comandos)}-2ea44f?style=for-the-badge)"
-        f" ![Parámetros](https://img.shields.io/badge/par%C3%A1metros-{len(parametros)}-0969da?style=for-the-badge)"
-        f" ![Temas](https://img.shields.io/badge/temas-{sum(len(t) for t in model.values())}-8250df?style=for-the-badge)",
+        f"![Commands](https://img.shields.io/badge/commands-{len(comandos)}-2ea44f?style=for-the-badge)"
+        f" ![Parameters](https://img.shields.io/badge/parameters-{len(parametros)}-0969da?style=for-the-badge)"
+        f" ![Topics](https://img.shields.io/badge/topics-{sum(len(t) for t in model.values())}-8250df?style=for-the-badge)",
         "",
-        "🌐 **Versión web con buscador:** [`docs/index.html`](docs/index.html)",
+        "🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)",
         "",
         "</div>",
         "",
         "---",
         "",
-        "## 📚 Secciones",
+        "## 📚 Sections",
         "",
-        "| | Sección | Contenido | Comandos | Parámetros |",
+        "| | Section | Contents | Commands | Parameters |",
         "|:-:|:--|:--|:-:|:-:|",
     ]
     for s, temas in model.items():
         meta = SECTIONS[s]
-        nc = sum(len(t["comandos"]) for t in temas.values())
-        np_ = sum(len(t["parametros"]) for t in temas.values())
+        nc = sum(len(t["commands"]) for t in temas.values())
+        np_ = sum(len(t["parameters"]) for t in temas.values())
         out.append(f"| {meta['emoji']} | **[{s}](notes/{s}.md)** | {meta['desc']} | {nc} | {np_} |")
-    out += ["", "## 🗂️ Temas", ""]
+    out += ["", "## 🗂️ Topics", ""]
     for s, temas in model.items():
-        out += [f"<details>", f"<summary><b>{SECTIONS[s]['emoji']} {s}</b> — {len(temas)} temas</summary>", ""]
+        out += [f"<details>", f"<summary><b>{SECTIONS[s]['emoji']} {s}</b> — {len(temas)} topics</summary>", ""]
         for tema, d in temas.items():
-            cmds = ", ".join(code(c["Comando"]) for c in d["comandos"]) or "<i>solo parámetros</i>"
+            cmds = ", ".join(code(c["Command"], table=False) for c in d["commands"]) or "<i>parameters only</i>"
             out.append(f"- [{tema}](notes/{s}.md#{slug(tema)}) — {cmds}")
         out += ["", "</details>", ""]
 
-    out += ["## 🔤 Índice alfabético de comandos", "", "| Comando | Qué hace | Sección |", "|:--|:--|:--|"]
+    out += ["## 🔤 Alphabetical command index", "", "| Command | What it does | Section |", "|:--|:--|:--|"]
     seen = {}
     for c in comandos:
-        seen.setdefault(c["Comando"], c)
+        seen.setdefault(c["Command"], c)
     for name in sorted(seen, key=lambda x: (not x[0].isalnum(), x.lower())):
         c = seen[name]
-        out.append(f"| {code(name)} | {cell(c['Descripción'])} | [{c['Sección']}](notes/{c['Sección']}.md#{slug(c['Tema'])}) |")
+        out.append(f"| {code(name)} | {cell(c['Description'])} | [{c['Section']}](notes/{c['Section']}.md#{slug(c['Topic'])}) |")
     out += [
         "",
-        "## 🛠️ Cómo actualizar",
+        "## 🛠️ How to update",
         "",
-        "Los datos viven en [`data/comandos.csv`](data/comandos.csv) y [`data/parametros.csv`](data/parametros.csv)"
-        " (exportados de la hoja *Comandos de Linux*). Tras editarlos:",
+        "The data lives in [`data/commands.csv`](data/commands.csv) and [`data/parameters.csv`](data/parameters.csv)."
+        " After editing them, run:",
         "",
         "```bash",
         "python3 scripts/build.py",
         "```",
         "",
-        "Esto regenera este README, las notas de [`notes/`](notes) y la web de [`docs/`](docs).",
+        "This rebuilds this README, the notes in [`notes/`](notes) and the web page in [`docs/`](docs).",
         "",
-        "> 💡 Para ver la web online: **Settings → Pages → Branch `main` / carpeta `/docs`**.",
+        "> 💡 To publish the web page: **Settings → Pages → Branch `main` / folder `/docs`**.",
         "",
     ]
     return "\n".join(out)
@@ -179,10 +178,10 @@ def build_html(comandos, parametros, model):
     data = {
         "sections": [{"name": s, **SECTIONS[s]} for s in SECTIONS],
         "temas": [
-            {"section": s, "tema": t, "id": slug(s + "-" + t), "comandos": d["comandos"], "parametros": d["parametros"]}
+            {"section": s, "tema": t, "id": slug(s + "-" + t), "commands": d["commands"], "parameters": d["parameters"]}
             for s, temas in model.items() for t, d in temas.items()
         ],
-        "stats": {"comandos": len(comandos), "parametros": len(parametros)},
+        "stats": {"commands": len(comandos), "parameters": len(parametros)},
     }
     tpl = (ROOT / "scripts" / "template.html").read_text(encoding="utf-8")
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -197,7 +196,7 @@ def main():
         (ROOT / "notes" / f"{s}.md").write_text(section_md(s, temas), encoding="utf-8")
     (ROOT / "README.md").write_text(readme_md(comandos, parametros, model), encoding="utf-8")
     (ROOT / "docs" / "index.html").write_text(build_html(comandos, parametros, model), encoding="utf-8")
-    print(f"OK: {len(comandos)} comandos, {len(parametros)} parámetros")
+    print(f"OK: {len(comandos)} commands, {len(parametros)} parameters")
 
 
 if __name__ == "__main__":
