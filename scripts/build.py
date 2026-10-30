@@ -109,7 +109,7 @@ def readme_md(cats, by_name, params):
         f" ![Parameters](https://img.shields.io/badge/parameters-{len(params)}-0969da?style=for-the-badge)"
         f" ![Categories](https://img.shields.io/badge/categories-{len(cats)}-8250df?style=for-the-badge)",
         "",
-        "🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)",
+        "🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)  ·  🐚 **Companion repo:** [Bash-Scripting-From-Scratch](https://github.com/TrueOwl-Override/Bash-Scripting-From-Scratch)",
         "",
         "</div>",
         "",
