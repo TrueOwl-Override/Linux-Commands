@@ -1,0 +1,15 @@
+Category,Emoji,Description
+Navigation & Files,📁,"Move around the filesystem and create, copy, delete and inspect files and folders."
+Viewing & Editing Files,📝,"Read files in the terminal, page through output, compare files and edit text."
+Searching,🔍,Find files anywhere on the system and locate where commands live.
+Text Processing,✂️,"Filter, cut, transform and sort text coming from files or other commands."
+"Pipes, Redirection & Operators",🔀,"Chain commands, decide where output and errors go, and run things in the background."
+Users & Groups,👤,"Check who you are, switch users, and manage accounts, passwords and groups."
+Permissions & Attributes,🔐,"Control who can read, write and run files, plus special attributes and capabilities."
+Shell & Environment,🐚,"Shell settings, environment variables, aliases and handy history shortcuts."
+Processes & Scheduling,⏱️,"See what's running, limit or repeat commands, and schedule jobs with cron."
+Networking,🌐,"Network interfaces, open ports and sockets, and raw connections with netcat."
+SSH & Remote Access,🔑,Connect to remote machines and manage SSH keys.
+"Binary, Encoding & Compression",🧬,"Inspect binary data, convert between formats, hash files and work with archives."
+System & Packages,📦,"Update the system, manage packages and check system info."
+Git,🌿,"Version control: clone projects, explore history, work with branches and publish changes."

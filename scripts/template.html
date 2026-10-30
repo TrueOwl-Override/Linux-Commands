@@ -42,10 +42,13 @@ header{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 8
 .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--muted)}
 .search kbd{position:absolute;right:10px;top:50%;transform:translateY(-50%);font:12px "JetBrains Mono",monospace;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:1px 7px;background:var(--panel2)}
 .iconbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;width:40px;height:40px;cursor:pointer;font-size:17px}
-.chips{max-width:1280px;margin:0 auto;padding:0 16px 12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chiprow{max-width:1280px;margin:0 auto;padding:0 16px 12px;display:flex;gap:12px;align-items:center}
+.chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;mask-image:linear-gradient(90deg,#000 92%,transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chip{white-space:nowrap;flex:none}
 .chip{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 14px;cursor:pointer;font:500 13px Inter,sans-serif}
 .chip[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#04120a}
-.count{margin-left:auto;color:var(--muted);font-size:13px}
+.count{color:var(--muted);font-size:13px;white-space:nowrap}
 
 .layout{max-width:1280px;margin:0 auto;padding:20px 16px 80px;display:grid;grid-template-columns:260px 1fr;gap:28px}
 nav.toc{position:sticky;top:140px;align-self:start;max-height:calc(100vh - 160px);overflow:auto;padding-right:6px}
@@ -53,6 +56,11 @@ nav.toc{position:sticky;top:140px;align-self:start;max-height:calc(100vh - 160px
 .toc a{display:block;text-decoration:none;color:var(--muted);font-size:13.5px;padding:4px 10px;border-left:2px solid var(--line)}
 .toc a:hover,.toc a.active{color:var(--text);border-color:var(--accent)}
 .toc a.hidden{display:none}
+.toc a{display:flex;align-items:center;gap:8px}
+.toc .e{width:20px;text-align:center}
+.toc .n,.secthead .n{margin-left:auto;font:12px "JetBrains Mono",monospace;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:0 8px}
+.secthead .n{margin-left:0}
+.cat{margin-bottom:36px}
 
 .hero{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:28px}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow)}
@@ -66,7 +74,7 @@ nav.toc{position:sticky;top:140px;align-self:start;max-height:calc(100vh - 160px
 .tema{margin:22px 0 30px}
 .tema h3{font-size:17px;margin:0 0 12px;display:flex;align-items:center;gap:10px}
 .tema h3::before{content:"#";font-family:"JetBrains Mono",monospace;color:var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:14px;align-items:start}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;min-width:0}
 .card .name{font:700 17px "JetBrains Mono",monospace;color:var(--accent);word-break:break-word}
 .card.usage .name{color:var(--accent2)}
@@ -108,7 +116,7 @@ footer{color:var(--muted);font-size:13px;text-align:center;padding:30px 0 0}
     </label>
     <button class="iconbtn" id="theme" title="Toggle theme" aria-label="Toggle theme">◐</button>
   </div>
-  <div class="chips" id="chips"></div>
+  <div class="chiprow"><div class="chips" id="chips"></div><div id="countbox"></div></div>
 </header>
 
 <div class="layout">
@@ -142,59 +150,38 @@ const norm = s => String(s ?? "").toLowerCase().normalize("NFD").replace(/[̀-ͯ
   };
 })();
 
-// Build cards: one per command in a tema, with that command's params nested.
-function buildCards(t){
-  const cards = [];
-  const byCmd = new Map();
-  t.commands.forEach(c => { const card = {name:c["Command"], desc:c["Description"], ex:c["Example"], params:[], usage:false}; cards.push(card); if(!byCmd.has(card.name)) byCmd.set(card.name, card); });
-  t.parameters.forEach(p => {
-    let card = byCmd.get(p["Command"]);
-    if (!card){ card = {name:p["Command"], desc:"", ex:"", params:[], usage:true}; cards.push(card); byCmd.set(card.name, card); }
-    card.params.push({flag:p["Parameter"], desc:p["Description"], ex:p["Example"]});
-  });
-  cards.forEach(c => c.text = norm([c.name,c.desc,c.ex,...c.params.flatMap(p=>[p.flag,p.desc,p.ex])].join(" ")));
-  return cards;
-}
-
 const exBlock = (ex) => ex ? `<div class="ex"><span class="t">${esc(ex)}</span><button class="copy" title="Copy" aria-label="Copy">⧉</button></div>` : "";
 
 function cardHTML(c){
-  const params = c.params.length ? `<div class="params"><div class="lbl">${c.usage ? "Usage" : "Parameters"}</div>${
+  const params = c.params.length ? `<div class="params"><div class="lbl">Parameters</div>${
     c.params.map(p=>`<div class="param"><code class="flag">${esc(p.flag)}</code><p>${esc(p.desc)}</p>${exBlock(p.ex)}</div>`).join("")}</div>` : "";
-  return `<article class="card${c.usage?" usage":""}"><div class="name">${esc(c.name)}</div>${c.desc?`<p class="desc">${esc(c.desc)}</p>`:""}${exBlock(c.ex)}${params}</article>`;
+  return `<article class="card"><div class="name">${esc(c.name)}</div>${c.desc?`<p class="desc">${esc(c.desc)}</p>`:""}${exBlock(c.ex)}${params}</article>`;
 }
 
 // Render
-const temas = DATA.temas.map(t => ({...t, cards: buildCards(t)}));
+const cats = DATA.categories;
+cats.forEach(cat => cat.commands.forEach(c => c.text = norm([c.name,c.desc,c.ex,...c.params.flatMap(p=>[p.flag,p.desc,p.ex])].join(" "))));
 $("#hero").innerHTML = `
   <div class="stat"><b>${DATA.stats.commands}</b><span>commands</span></div>
   <div class="stat"><b>${DATA.stats.parameters}</b><span>parameters</span></div>
-  <div class="stat"><b>${temas.length}</b><span>topics</span></div>`;
+  <div class="stat"><b>${DATA.stats.categories}</b><span>categories</span></div>`;
 
-let html = "", toc = "";
-DATA.sections.forEach(s => {
-  const ts = temas.filter(t => t.section === s.name);
-  html += `<section class="sect" data-section="${esc(s.name)}"><div class="secthead"><h2>${s.emoji} ${esc(s.name)}</h2></div><p class="sectdesc">${esc(s.desc)}</p>`;
-  toc += `<h4 data-section="${esc(s.name)}">${s.emoji} ${esc(s.name)}</h4>`;
-  ts.forEach(t => {
-    html += `<div class="tema" id="${t.id}" data-section="${esc(s.name)}"><h3>${esc(t.tema)}</h3><div class="grid">${t.cards.map(cardHTML).join("")}</div></div>`;
-    toc += `<a href="#${t.id}" data-id="${t.id}" data-section="${esc(s.name)}">${esc(t.tema)}</a>`;
-  });
-  html += `</section>`;
-});
-$("#content").innerHTML = html;
-$("#toc").innerHTML = toc;
+$("#content").innerHTML = cats.map(cat =>
+  `<section class="cat" id="${cat.id}"><div class="secthead"><h2>${cat.emoji} ${esc(cat.name)}</h2><span class="n">${cat.commands.length}</span></div>
+   <p class="sectdesc">${esc(cat.desc)}</p><div class="grid">${cat.commands.map(cardHTML).join("")}</div></section>`).join("");
+$("#toc").innerHTML = `<h4>Categories</h4>` + cats.map(cat =>
+  `<a href="#${cat.id}" data-id="${cat.id}"><span class="e">${cat.emoji}</span>${esc(cat.name)}<span class="n">${cat.commands.length}</span></a>`).join("");
 
-// Attach card elements to model
-document.querySelectorAll(".tema").forEach((el, i) => {
-  const cardEls = el.querySelectorAll(".card");
-  temas[i].el = el;
-  temas[i].cards.forEach((c, j) => { c.el = cardEls[j]; c.orig = cardEls[j].innerHTML; });
+cats.forEach(cat => {
+  cat.el = document.getElementById(cat.id);
+  const cardEls = cat.el.querySelectorAll(".card");
+  cat.commands.forEach((c, j) => { c.el = cardEls[j]; c.orig = cardEls[j].innerHTML; });
 });
 
-// Section chips
+// Category chips
 const active = new Set();
-$("#chips").innerHTML = DATA.sections.map(s => `<button class="chip" aria-pressed="false" data-s="${esc(s.name)}">${s.emoji} ${esc(s.name)}</button>`).join("") + `<span class="count" id="count"></span>`;
+$("#chips").innerHTML = cats.map(c => `<button class="chip" aria-pressed="false" data-s="${c.id}">${c.emoji} ${esc(c.name)}</button>`).join("");
+$("#countbox").innerHTML = `<span class="count" id="count"></span>`;
 document.querySelectorAll(".chip").forEach(b => b.onclick = () => {
   const s = b.dataset.s; active.has(s) ? active.delete(s) : active.add(s);
   b.setAttribute("aria-pressed", active.has(s)); apply();
@@ -220,23 +207,20 @@ function highlight(el, terms){
 function apply(){
   const terms = norm($("#q").value).split(/\s+/).filter(Boolean);
   let shown = 0;
-  temas.forEach(t => {
-    const secOk = !active.size || active.has(t.section);
+  cats.forEach(cat => {
+    const catOk = !active.size || active.has(cat.id);
     let any = false;
-    t.cards.forEach(c => {
-      const ok = secOk && terms.every(term => c.text.includes(term));
+    cat.commands.forEach(c => {
+      const ok = catOk && terms.every(term => c.text.includes(term));
       c.el.style.display = ok ? "" : "none";
       c.el.innerHTML = c.orig;
       if (ok){ any = true; shown++; highlight(c.el, terms); }
     });
-    t.el.style.display = any ? "" : "none";
-    const link = document.querySelector(`.toc a[data-id="${t.id}"]`);
-    link.classList.toggle("hidden", !any);
+    cat.el.style.display = any ? "" : "none";
+    document.querySelector(`.toc a[data-id="${cat.id}"]`).classList.toggle("hidden", !any);
   });
-  document.querySelectorAll(".sect").forEach(s => s.style.display = [...s.querySelectorAll(".tema")].some(t => t.style.display !== "none") ? "" : "none");
-  document.querySelectorAll(".toc h4").forEach(h => h.style.display = document.querySelector(`.toc a[data-section="${h.dataset.section}"]:not(.hidden)`) ? "" : "none");
   $("#empty").style.display = shown ? "none" : "block";
-  $("#count").textContent = `${shown} card${shown === 1 ? "" : "s"}`;
+  $("#count").textContent = `${shown} command${shown === 1 ? "" : "s"}`;
 }
 $("#q").addEventListener("input", apply);
 document.addEventListener("keydown", e => {
@@ -261,7 +245,7 @@ const io = new IntersectionObserver(entries => {
     const a = document.querySelector(`.toc a[data-id="${en.target.id}"]`); if (a) a.classList.add("active");
   }});
 }, {rootMargin: "-160px 0px -70% 0px"});
-temas.forEach(t => io.observe(t.el));
+cats.forEach(c => io.observe(c.el));
 
 apply();
 </script>

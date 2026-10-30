@@ -2,7 +2,10 @@
 """Builds README.md, notes/*.md and docs/index.html from data/*.csv.
 
 Usage:  python3 scripts/build.py
-Edit the CSV files (or re-export them from Google Sheets) and run it again.
+Edit the CSV files and run it again:
+  data/categories.csv  Category, Emoji, Description   (order = display order)
+  data/commands.csv    Category, Command, Description, Example
+  data/parameters.csv  Command, Parameter, Description, Example
 """
 import csv
 import json
@@ -13,11 +16,6 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 
-SECTIONS = OrderedDict([
-    ("Concepts", {"emoji": "🧠", "desc": "Terminal fundamentals: users, permissions, redirection, searching and package management."}),
-    ("Labs", {"emoji": "🧪", "desc": "Commands learned solving labs (OverTheWire Bandit): SSH, filtering, binaries, cron, git and more."}),
-])
-
 
 def read(name):
     with open(DATA / name, encoding="utf-8") as f:
@@ -25,15 +23,12 @@ def read(name):
 
 
 def slug(text):
-    text = text.lower()
-    for a, b in zip("áéíóúñü", "aeiounu"):
-        text = text.replace(a, b)
-    text = re.sub(r"[^a-z0-9]+", "-", text).strip("-")
+    text = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
     return text or "x"
 
 
 def code(text, table=True):
-    """Text as inline code that is safe inside a Markdown table."""
+    """Text as inline code; pipes are escaped when used inside a Markdown table."""
     if not text:
         return ""
     t = text.replace("|", "\\|") if table else text
@@ -47,82 +42,72 @@ def cell(text):
 
 
 def build_model():
-    comandos = read("commands.csv")
-    parametros = read("parameters.csv")
-    # Topic order follows the commands sheet; topics that only appear in the
-    # parameters sheet are inserted right after the last topic seen, so the
-    # course order is kept.
-    order = {s: [] for s in SECTIONS}
-    for row in comandos:
-        if row["Topic"] not in order[row["Section"]]:
-            order[row["Section"]].append(row["Topic"])
-    last = {}
-    for row in parametros:
-        s, t = row["Section"], row["Topic"]
-        if t not in order[s]:
-            base = t.split(" [")[0]
-            siblings = [i for i, x in enumerate(order[s]) if x.split(" [")[0] == base]
-            if siblings:  # e.g. "Topic [2-2]" goes right after "Topic [1-2]"
-                idx = siblings[-1] + 1
-            else:
-                idx = order[s].index(last[s]) + 1 if s in last else 0
-            order[s].insert(idx, t)
-        last[s] = t
-    model = OrderedDict(
-        (s, OrderedDict((t, {"commands": [], "parameters": []}) for t in order[s])) for s in SECTIONS
-    )
-    for row in comandos:
-        model[row["Section"]][row["Topic"]]["commands"].append(row)
-    for row in parametros:
-        model[row["Section"]][row["Topic"]]["parameters"].append(row)
-    return comandos, parametros, model
+    cats = OrderedDict()
+    for c in read("categories.csv"):
+        cats[c["Category"]] = {"name": c["Category"], "emoji": c["Emoji"], "desc": c["Description"],
+                               "id": slug(c["Category"]), "commands": []}
+    by_name = {}
+    for row in read("commands.csv"):
+        cmd = {"name": row["Command"], "desc": row["Description"], "ex": row["Example"],
+               "category": row["Category"], "params": []}
+        cats[row["Category"]]["commands"].append(cmd)
+        by_name[cmd["name"]] = cmd
+    params = read("parameters.csv")
+    for p in params:
+        by_name[p["Command"]]["params"].append(
+            {"flag": p["Parameter"], "desc": p["Description"], "ex": p["Example"]})
+    return cats, by_name, params
 
 
-def section_md(section, temas):
-    meta = SECTIONS[section]
-    n_c = sum(len(t["commands"]) for t in temas.values())
-    n_p = sum(len(t["parameters"]) for t in temas.values())
+def cmd_anchor(name):
+    s = slug(name)
+    if s == "x" or not any(ch.isalnum() for ch in name):
+        s = "sym-" + "-".join(str(ord(ch)) for ch in name if ch != " ")
+    return "cmd-" + s
+
+
+def category_md(cat, n_params):
     out = [
-        f"# {meta['emoji']} {section}",
+        f"# {cat['emoji']} {cat['name']}",
         "",
-        f"> {meta['desc']}",
+        f"> {cat['desc']}",
         "",
-        f"**{n_c}** commands · **{n_p}** parameters · **{len(temas)}** topics  ·  [⬅ Back to index](../README.md)",
+        f"**{len(cat['commands'])}** commands · **{n_params}** parameters  ·  [⬅ Back to index](../README.md)",
         "",
-        "## Topics",
+        '<a id="commands"></a>',
         "",
+        "| Command | What it does |",
+        "|:--|:--|",
     ]
-    for i, tema in enumerate(temas, 1):
-        out.append(f"{i}. [{tema}](#{slug(tema)})")
+    for c in cat["commands"]:
+        out.append(f"| [{code(c['name'])}](#{cmd_anchor(c['name'])}) | {cell(c['desc'])} |")
     out.append("")
-    for tema, data in temas.items():
-        out += ["---", "", f'<a id="{slug(tema)}"></a>', "", f"## {tema}", ""]
-        if data["commands"]:
-            out += ["| Command | What it does | Example |", "|:--|:--|:--|"]
-            for c in data["commands"]:
-                out.append(f"| {code(c['Command'])} | {cell(c['Description'])} | {code(c['Example'])} |")
+    for c in cat["commands"]:
+        out += ["---", "", f'<a id="{cmd_anchor(c["name"])}"></a>', "", f"## {code(c['name'], table=False)}", "",
+                c["desc"], ""]
+        if c["ex"]:
+            out += ["```bash", c["ex"], "```", ""]
+        if c["params"]:
+            out += ["| Parameter | What it does | Example |", "|:--|:--|:--|"]
+            for p in c["params"]:
+                out.append(f"| {code(p['flag'])} | {cell(p['desc'])} | {code(p['ex'])} |")
             out.append("")
-        if data["parameters"]:
-            out += ["<details open>", f"<summary><b>🔧 Parameters & usage ({len(data['parameters'])})</b></summary>", "",
-                    "| Command | Parameter | What it does | Example |", "|:--|:--|:--|:--|"]
-            for p in data["parameters"]:
-                out.append(f"| {code(p['Command'])} | {code(p['Parameter'])} | {cell(p['Description'])} | {code(p['Example'])} |")
-            out += ["", "</details>", ""]
-        out += ["<sub>[⬆ Back to top](#topics)</sub>", ""]
+        out += ["<sub>[⬆ Back to top](#commands)</sub>", ""]
     return "\n".join(out)
 
 
-def readme_md(comandos, parametros, model):
+def readme_md(cats, by_name, params):
+    n_cmd = len(by_name)
     out = [
         '<div align="center">',
         "",
         "# 🐧 Linux Commands",
         "",
-        "**My Linux command notes, organized by topic, with copy-ready examples.**",
+        "**A personal reference of Linux commands, grouped by what they do, with copy-ready examples.**",
         "",
-        f"![Commands](https://img.shields.io/badge/commands-{len(comandos)}-2ea44f?style=for-the-badge)"
-        f" ![Parameters](https://img.shields.io/badge/parameters-{len(parametros)}-0969da?style=for-the-badge)"
-        f" ![Topics](https://img.shields.io/badge/topics-{sum(len(t) for t in model.values())}-8250df?style=for-the-badge)",
+        f"![Commands](https://img.shields.io/badge/commands-{n_cmd}-2ea44f?style=for-the-badge)"
+        f" ![Parameters](https://img.shields.io/badge/parameters-{len(params)}-0969da?style=for-the-badge)"
+        f" ![Categories](https://img.shields.io/badge/categories-{len(cats)}-8250df?style=for-the-badge)",
         "",
         "🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)",
         "",
@@ -130,37 +115,25 @@ def readme_md(comandos, parametros, model):
         "",
         "---",
         "",
-        "## 📚 Sections",
+        "## 📚 Categories",
         "",
-        "| | Section | Contents | Commands | Parameters |",
-        "|:-:|:--|:--|:-:|:-:|",
+        "| | Category | What's inside | Commands |",
+        "|:-:|:--|:--|:--|",
     ]
-    for s, temas in model.items():
-        meta = SECTIONS[s]
-        nc = sum(len(t["commands"]) for t in temas.values())
-        np_ = sum(len(t["parameters"]) for t in temas.values())
-        out.append(f"| {meta['emoji']} | **[{s}](notes/{s}.md)** | {meta['desc']} | {nc} | {np_} |")
-    out += ["", "## 🗂️ Topics", ""]
-    for s, temas in model.items():
-        out += [f"<details>", f"<summary><b>{SECTIONS[s]['emoji']} {s}</b> — {len(temas)} topics</summary>", ""]
-        for tema, d in temas.items():
-            cmds = ", ".join(code(c["Command"], table=False) for c in d["commands"]) or "<i>parameters only</i>"
-            out.append(f"- [{tema}](notes/{s}.md#{slug(tema)}) — {cmds}")
-        out += ["", "</details>", ""]
-
-    out += ["## 🔤 Alphabetical command index", "", "| Command | What it does | Section |", "|:--|:--|:--|"]
-    seen = {}
-    for c in comandos:
-        seen.setdefault(c["Command"], c)
-    for name in sorted(seen, key=lambda x: (not x[0].isalnum(), x.lower())):
-        c = seen[name]
-        out.append(f"| {code(name)} | {cell(c['Description'])} | [{c['Section']}](notes/{c['Section']}.md#{slug(c['Topic'])}) |")
+    for cat in cats.values():
+        cmds = " ".join(code(c["name"]) for c in cat["commands"])
+        out.append(f"| {cat['emoji']} | **[{cat['name']}](notes/{cat['id']}.md)** | {cat['desc']} | {cmds} |")
+    out += ["", "## 🔤 A–Z index", "", "| Command | What it does | Category |", "|:--|:--|:--|"]
+    for name in sorted(by_name, key=lambda x: (not x[0].isalnum(), x.lower())):
+        c = by_name[name]
+        cat = cats[c["category"]]
+        out.append(f"| [{code(name)}](notes/{cat['id']}.md#{cmd_anchor(name)}) | {cell(c['desc'])} | {cat['emoji']} {cat['name']} |")
     out += [
         "",
         "## 🛠️ How to update",
         "",
-        "The data lives in [`data/commands.csv`](data/commands.csv) and [`data/parameters.csv`](data/parameters.csv)."
-        " After editing them, run:",
+        "The data lives in [`data/`](data): [`categories.csv`](data/categories.csv), "
+        "[`commands.csv`](data/commands.csv) and [`parameters.csv`](data/parameters.csv). After editing them, run:",
         "",
         "```bash",
         "python3 scripts/build.py",
@@ -174,14 +147,10 @@ def readme_md(comandos, parametros, model):
     return "\n".join(out)
 
 
-def build_html(comandos, parametros, model):
+def build_html(cats, by_name, params):
     data = {
-        "sections": [{"name": s, **SECTIONS[s]} for s in SECTIONS],
-        "temas": [
-            {"section": s, "tema": t, "id": slug(s + "-" + t), "commands": d["commands"], "parameters": d["parameters"]}
-            for s, temas in model.items() for t, d in temas.items()
-        ],
-        "stats": {"commands": len(comandos), "parameters": len(parametros)},
+        "categories": list(cats.values()),
+        "stats": {"commands": len(by_name), "parameters": len(params), "categories": len(cats)},
     }
     tpl = (ROOT / "scripts" / "template.html").read_text(encoding="utf-8")
     payload = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -189,14 +158,18 @@ def build_html(comandos, parametros, model):
 
 
 def main():
-    comandos, parametros, model = build_model()
-    (ROOT / "notes").mkdir(exist_ok=True)
+    cats, by_name, params = build_model()
+    notes = ROOT / "notes"
+    notes.mkdir(exist_ok=True)
+    for old in notes.glob("*.md"):
+        old.unlink()
+    for cat in cats.values():
+        n_p = sum(len(c["params"]) for c in cat["commands"])
+        (notes / f"{cat['id']}.md").write_text(category_md(cat, n_p), encoding="utf-8")
+    (ROOT / "README.md").write_text(readme_md(cats, by_name, params), encoding="utf-8")
     (ROOT / "docs").mkdir(exist_ok=True)
-    for s, temas in model.items():
-        (ROOT / "notes" / f"{s}.md").write_text(section_md(s, temas), encoding="utf-8")
-    (ROOT / "README.md").write_text(readme_md(comandos, parametros, model), encoding="utf-8")
-    (ROOT / "docs" / "index.html").write_text(build_html(comandos, parametros, model), encoding="utf-8")
-    print(f"OK: {len(comandos)} commands, {len(parametros)} parameters")
+    (ROOT / "docs" / "index.html").write_text(build_html(cats, by_name, params), encoding="utf-8")
+    print(f"OK: {len(by_name)} commands, {len(params)} parameters, {len(cats)} categories")
 
 
 if __name__ == "__main__":

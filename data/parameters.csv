@@ -1,122 +1,122 @@
-Section,Topic,Command,Parameter,Description,Example
-Concepts,Basic Linux commands [1-2],sudo,su,Switches to the root session permanently until you exit,sudo su
-Concepts,Basic Linux commands [1-2],grep,-n,Shows the line number of each match,"grep -n ""root"" /etc/passwd"
-Concepts,Basic Linux commands [1-2],cat,/etc/group,File listing the existing groups and their members,cat /etc/group
-Concepts,Basic Linux commands [1-2],echo,$PATH,Variable holding the folders where the system looks for commands,echo $PATH
-Concepts,Basic Linux commands [2-2],command,-v,"Shows the path of a command, similar to which",command -v python3
-Concepts,Basic Linux commands [2-2],ls,-l,"Detailed listing (permissions, owner, size, date)",ls -l /etc
-Concepts,Basic Linux commands [2-2],cd,.,Stays in the current folder,cd .
-Concepts,Basic Linux commands [2-2],cd,..,Goes up one level to the parent folder,cd ..
-Concepts,Basic Linux commands [2-2],cd,(absolute path),Goes to a specific location starting from the system root,cd /var/log
-Concepts,Basic Linux commands [2-2],cd,(relative path),Goes to a location relative to the current directory,cd ../documents
-Concepts,Basic Linux commands [2-2],cd,/,Goes straight to the system root,cd /
-Concepts,Basic Linux commands [2-2],cd,~,Goes to the user's home folder,cd ~
-Concepts,Basic Linux commands [2-2],echo,$HOME,Variable holding the path of the user's home folder,echo $HOME
-Concepts,Basic Linux commands [2-2],echo,$SHELL,"Variable holding the path of the shell in use (bash, zsh)",echo $SHELL
-Concepts,Basic Linux commands [2-2],cat,/etc/passwd,"File with basic user info (UID, home, shell)",cat /etc/passwd
-Concepts,Basic Linux commands [2-2],cat,/etc/shells,File listing the shells installed and available,cat /etc/shells
-Concepts,"Controlling stderr/stdout, operators and background processes",cat,/etc/hosts,File with manual IP-to-domain mappings that skip DNS,cat /etc/hosts
-Concepts,"Controlling stderr/stdout, operators and background processes",echo,$?,"Exit code of the last command (0 = success, anything else = error)",ls /doesnotexist ; echo $?
-Concepts,File descriptors,exec,3<> file,"Opens ""file"" for reading and writing as descriptor 3",exec 3<> file.txt
-Concepts,File descriptors,exec,>&3,Redirects the session's standard output to descriptor 3,exec >&3
-Concepts,File descriptors,exec,3>&-,Closes descriptor 3,exec 3>&-
-Concepts,File descriptors,exec,5>&3,Duplicates descriptor 3 into descriptor 5,exec 5>&3
-Concepts,File descriptors,exec,8>&3-,Duplicates descriptor 3 into 8 and closes the original 3,exec 8>&3-
-Concepts,Reading and understanding permissions [2-2],cat,/etc/shadow,File where users' encrypted passwords are stored,sudo cat /etc/shadow
-Concepts,Reading and understanding permissions [2-2],cat,/etc/login.defs,System configuration; ENCRYPT_METHOD sets how passwords are hashed,grep ENCRYPT_METHOD /etc/login.defs
-Concepts,Assigning permissions [1-2],chmod,o+w,"Adds write permission for ""others"" (other users)",chmod o+w file.txt
-Concepts,Assigning permissions [1-2],chmod,o-w,"Removes write permission for ""others"" (other users)",chmod o-w file.txt
-Concepts,Assigning permissions [1-2],rm,-r,Deletes folders and everything inside them recursively,rm -r old_folder
-Concepts,Assigning permissions [2-2],useradd,-s,Sets the new user's shell,sudo useradd -s /bin/bash john
-Concepts,Assigning permissions [2-2],useradd,-d,Sets the new user's home folder,sudo useradd -d /home/john john
-Concepts,Assigning permissions [2-2],usermod,-a,"Together with -G, adds the user to a group without removing them from their current ones",sudo usermod -a -G sudo john
-Concepts,Assigning permissions [2-2],usermod,-G,Sets the user's secondary groups,"sudo usermod -G developers,docker john"
-Concepts,Octal permission notation,chmod,755,"Octal notation: r=4, w=2, x=1, added up per block (owner, group, others); 755 means rwxr-xr-x and 777 means full permissions for everyone",chmod 755 script.sh
-Concepts,Special permissions - Sticky Bit,chmod,+t,Enables the Sticky Bit on a folder: only a file's owner or root can delete or rename it,chmod +t /tmp/shared
-Concepts,File attributes - chattr and lsattr,rm,-f,"Forces deletion without asking, even if the file is write-protected",rm -f protected_file.txt
-Concepts,File attributes - chattr and lsattr,chattr,+i,"Makes the file immutable: nobody, not even root, can modify, delete or rename it until the attribute is removed",sudo chattr +i file.txt
-Concepts,File attributes - chattr and lsattr,chattr,-V,Verbose mode when changing the attribute,sudo chattr -V +i file.txt
-Concepts,Special permissions - SUID and SGID,chmod,4000,Octal value of the SUID special permission,chmod 4755 program
-Concepts,Special permissions - SUID and SGID,chmod,u+s,Symbolic way to set SUID (s bit on the owner's execute permission),chmod u+s program
-Concepts,Special permissions - SUID and SGID,chmod,2000,Octal value of the SGID special permission,chmod 2755 folder
-Concepts,Special permissions - SUID and SGID,chmod,g+s,Symbolic way to set SGID (s bit on the group's execute permission),chmod g+s folder
-Concepts,Special privileges - Capabilities,getcap,-r,Searches for and shows capabilities recursively through subfolders,getcap -r / 2>/dev/null
-Concepts,Special privileges - Capabilities,setcap,-r,Removes the capabilities assigned to a file,sudo setcap -r /usr/bin/ping
-Concepts,Using .bashrc and .zshrc,ls,-a,Shows all files including hidden ones (those starting with a dot),ls -a ~
-Concepts,Using .bashrc and .zshrc,hostname,-I,Shows the IP address(es) assigned to the machine,hostname -I
-Concepts,Using .bashrc and .zshrc,cut,-d,Sets the delimiter used to split the text into columns,"cut -d "":"" -f 1 /etc/passwd"
-Concepts,Using .bashrc and .zshrc,cut,-f,Selects the field (column) number to extract,"cut -d "":"" -f 3 /etc/passwd"
-Concepts,Using .bashrc and .zshrc,awk,'{print $1}',Prints the first column of each line,ls -l | awk '{print $1}'
-Concepts,Using .bashrc and .zshrc,alias,name='absolute_path',Creates a shortcut that runs a long command or path with a short word,alias ll='ls -la'
-Concepts,Using .bashrc and .zshrc,export,variable_name,Turns a variable into an environment variable available to other processes,"export MY_VAR=""hello"""
-Concepts,Updating and upgrading the system,apt,update,Refreshes the list of available packages from the repositories without installing anything,sudo apt update
-Concepts,Updating and upgrading the system,apt,upgrade,Installs updates for the packages you have installed (don't use it on Parrot),sudo apt upgrade
-Concepts,Updating and upgrading the system,sudo,pacman -Syu,Arch Linux: syncs the package list and upgrades the whole system,sudo pacman -Syu
-Concepts,System-wide searches,find,-name,Searches for files by exact name or with wildcards,find -name '*xampl*.sh'
-Concepts,System-wide searches,find,-type,Filters by type: file (f) or directory (d),find /home -type f
-Concepts,System-wide searches,find,-perm,Filters by the file's specific permissions,find / -perm -4000 2>/dev/null
-Concepts,System-wide searches,find,-group,Filters by owning group,find /home -group developers
-Concepts,System-wide searches,find,-user,Filters by owning user,find /home -user john
-Concepts,System-wide searches,find,-writable,Shows only files you have write permission on,find /etc -writable 2>/dev/null
-Concepts,System-wide searches,find,-executable,Shows only files you have execute permission on,find /usr/bin -executable -type f
-Concepts,System-wide searches,find,-readable,Shows only files you have read permission on,find /var -readable 2>/dev/null
-Concepts,Reading text output,tail,-n,Sets how many lines from the end to show,tail -n 20 /var/log/syslog
-Concepts,Reading text output,awk,'NR==2',Shows only line number 2 (NR = record number),awk 'NR==2' file.txt
-Concepts,Reading text output,awk,"FS=""/""","Sets ""/"" as the field separator (FS) to split the text into columns","echo ""/home/john"" | awk '{print $2}' FS=""/"""
-Concepts,Reading text output,echo,-e,"Enables special characters (\n, \t) in the printed text","echo -e ""line1\nline2"""
-Concepts,Reading text output,echo,"-e ""\n""",\n is a line break; it needs the -e flag,"echo -e ""Hello\nWorld"""
-Labs,SSH connections,ssh,-p,Sets the port to connect to when the SSH server doesn't use the default one (22),ssh -p 2222 user@192.168.1.10
-Labs,SSH connections,export,TERM=xterm,Sets the terminal type; useful when a remote connection has compatibility issues,export TERM=xterm
-Labs,SSH connections,sshpass,-p,Gives the password directly in the command so you don't have to type it when connecting over SSH,sshpass -p 'my_password' ssh user@192.168.1.10
-Labs,SSH connections,ssh,bandit0@bandit.labs.overthewire.org -p 2220,Connects to the Bandit server as bandit0 on port 2220 instead of 22,ssh bandit0@bandit.labs.overthewire.org -p 2220
-Labs,Reading special files [1-2],cat,/home/bandit1/-,"Reads the file named ""-"" by its absolute path, so cat doesn't confuse it with standard input",cat /home/bandit1/-
-Labs,Reading special files [1-2],cat,./-,"Reads the ""-"" file by pointing to the current directory, avoiding the stdin confusion",cat ./-
-Labs,Reading special files [1-2],cat,$(pwd)/-,Combines pwd (the current path) with the file name; same effect as the absolute path,cat $(pwd)/-
-Labs,Reading special files [1-2],grep,"-r ""\w""",Recursively finds lines with at least one alphanumeric character to locate content in files in any folder,"grep -r ""\w"" /home/user/"
-Labs,Reading special files [1-2],cut,-d ':' -f 2,"Splits each line using "":"" as the delimiter and extracts only the second field","echo ""a:b:c"" | cut -d ':' -f 2"
-Labs,Reading special files [1-2],tr,':' ' ',"Replaces every "":"" with a space in the processed text","echo ""a:b:c"" | tr ':' ' '"
-Labs,Reading special files [1-2],awk,"'{print $2}' FS="":""","Uses "":"" as the field separator (FS) and prints the second column of each line","echo ""a:b:c"" | awk '{print $2}' FS="":"""
-Labs,Reading special files [1-2],awk,'NF{print $NF}',Prints the last field of each line; NF is the number of fields and $NF the value of the last one,"echo ""one two three"" | awk 'NF{print $NF}'"
-Labs,Reading special files [1-2],tail,-n 1,Shows only the last line of the file or text,tail -n 1 file.txt
-Labs,Reading special files [1-2],head,-n 1,Shows only the first line of the file or text,head -n 1 file.txt
-Labs,Reading special files [2-2],cat,"""spaces in this filename""",Reads a file with spaces by wrapping its name in quotes so it's treated as a single name,"cat ""spaces in this filename"""
-Labs,Reading special files [2-2],cat,spaces\ in\ this\ filename,Reads a file with spaces by escaping each space with a backslash so they don't split the arguments,cat spaces\ in\ this\ filename
-Labs,Reading special files [2-2],cat,s*,"Uses a wildcard to complete the name automatically, as long as no other file starts the same way",cat s*
-Labs,Reading special files [2-2],cat,home/bandit/s*,"Same as above, but specifying the path where the file is",cat home/bandit/s*
-Labs,Hidden directories and files,find,.,"Lists every file and folder in the current directory, including subdirectories",find .
-Labs,Hidden directories and files,grep,"-vE ""bashrc\|profile""","Shows the lines that do NOT match ""bashrc"" or ""profile""; -v inverts the match and -E enables extended regex (\| means ""or"")","ls -a | grep -vE ""bashrc|profile"""
-Labs,Precise file searches [1-2],find,-size,Filters the search by file size,find -size 1033c
-Labs,Data filtering methods [2-2],uniq,-u,"Shows only completely unique lines, the ones that never repeat",sort data.txt | uniq -u
-Labs,Base64 encoding and decoding,base64,-d,Decodes Base64 text back to its original form,"echo ""aG9sYQ=="" | base64 -d"
-Labs,Caesar cipher and tr,tr,'[A-Za-z]' '[N-ZA-Mn-za-m]',"Replaces each letter with the one 13 positions ahead, applying the ROT13 cipher","echo ""Uryyb"" | tr '[A-Za-z]' '[N-ZA-Mn-za-m]'"
-Labs,Recursive decompression,xxd,-p,"Shows plain hexadecimal output, without addresses or text alongside",xxd -p file.bin
-Labs,Recursive decompression,xxd,-s,Skips to a specific offset in the file before showing it in hexadecimal,xxd -s 16 file.bin
-Labs,Recursive decompression,xxd,-r,Turns a hex dump back into binary,xxd -r data.hex output.bin
-Labs,Recursive decompression,7z,l,Lists an archive's contents without extracting it,7z l backup.7z
-Labs,Recursive decompression,7z,x,Extracts an archive's contents keeping its folder structure,7z x backup.7z
-Labs,SSH key pairs and connections,ssh-copy-id,-i,Sets which public key file to copy when you have several keys,ssh-copy-id -i ~/.ssh/id_ed25519.pub user@192.168.1.10
-Labs,SSH key pairs and connections,ssh,-i,Sets which private key file to use to authenticate over SSH,ssh -i ~/.ssh/id_ed25519 user@192.168.1.10
-Labs,SSH key pairs and connections,cat,~/.ssh/authorized_keys,File with the SSH public keys allowed to log into that account without a password,cat ~/.ssh/authorized_keys
-Labs,Making connections with netcat,ss,-nltp,"Shows listening TCP sockets without resolving names, including the process behind each one",sudo ss -nltp
-Labs,Making connections with netcat,lsof,-i:,Filters the output to show only connections related to the given port,sudo lsof -i:80
-Labs,Making connections with netcat,ps,-faux,Shows every process from every user in a detailed tree format,ps -faux
-Labs,Making connections with netcat,ps,-eo command,Shows only the command column for each process,ps -eo command
-Labs,Making connections with netcat,echo,"""obase=10; ibase=16; $hexNum"" | bc",Converts a variable's hexadecimal value to decimal using bc,"hexNum=""FF""; echo ""obase=10; ibase=16; $hexNum"" | bc"
-Labs,Making connections with netcat,cat,/proc/net/tcp,"Virtual file with the active TCP connections (IPs, ports and state) in hexadecimal",cat /proc/net/tcp
-Labs,Encrypted connections,ncat,--ssl,Encrypts the connection with SSL/TLS to protect the data being sent,ncat --ssl 192.168.1.10 443
-Labs,Running commands over SSH,ssh,"user@host ""command""","Runs a command directly on the remote server when connecting, without loading a full interactive session or the user's bashrc","ssh user@192.168.1.10 ""ls -la"""
-Labs,Abusing SUID to switch users,bash,-p,"Starts the shell in privileged mode so the effective UID/GID aren't reset; useful to keep privileges gained through SUID",bash -p
-Labs,Abusing Cron jobs [1-3],ls,/etc/cron.d,Directory holding the configuration files of the system's Cron jobs,ls -l /etc/cron.d
-Labs,Abusing Cron jobs [1-3],crontab,* * * * * command,"Cron job format: Minute Hour Day-of-month Month Day-of-week Command; * means every value (every minute, hour, etc.)",* * * * * /home/user/script.sh
-Labs,Abusing Cron jobs [3-3],watch,-n 1,Sets the interval in seconds between runs; here every 1 second,watch -n 1 ls -l /tmp
-Labs,Escaping a command's context,more,v,"From inside more, opens visual mode (the vi editor) on the content",v (inside more)
-Labs,Escaping a command's context,more,:set shell=/bin/bash,"Once in visual mode (after Esc + Shift + :), sets Bash as the shell to use",:set shell=/bin/bash
-Labs,Escaping a command's context,more,:shell,"Opens an interactive shell from visual mode, escaping more's context",:shell
-Labs,Working with GitHub projects [2-5],git show,(commit id),Shows every change applied in that commit,git show a1b2c3d
-Labs,Working with GitHub projects [2-5],git checkout,(commit id),"Takes the project back to that point in history, restoring the files that existed then",git checkout a1b2c3d
-Labs,Working with GitHub projects [3-5],git branch,-a,"Lists every branch in the project, both local and remote",git branch -a
-Labs,Working with GitHub projects [3-5],git checkout,(branch name),Switches to the given branch by name,git checkout develop
-Labs,Working with GitHub projects [4-5],git show,(tag name),"Shows info about the given tag and the commit it points to, with its changes",git show v1.0
-Labs,Working with GitHub projects [5-5],git add,-f,Forces a file into the staging area even if .gitignore ignores it,git add -f key.txt
-Labs,Working with GitHub projects [5-5],git commit,"-m ""identifier""",Sets the message that identifies the commit,"git commit -m ""Add key.txt"""
-Labs,Working with GitHub projects [5-5],git push,-u origin branch,Pushes commits to the given branch on the origin remote and links it so later push/pull don't need it spelled out,git push -u origin master
+Command,Parameter,Description,Example
+sudo,su,Switches to the root session permanently until you exit,sudo su
+grep,-n,Shows the line number of each match,"grep -n ""root"" /etc/passwd"
+cat,/etc/group,File listing the existing groups and their members,cat /etc/group
+echo,$PATH,Variable holding the folders where the system looks for commands,echo $PATH
+command,-v,"Shows the path of a command, similar to which",command -v python3
+ls,-l,"Detailed listing (permissions, owner, size, date)",ls -l /etc
+cd,.,Stays in the current folder,cd .
+cd,..,Goes up one level to the parent folder,cd ..
+cd,(absolute path),Goes to a specific location starting from the system root,cd /var/log
+cd,(relative path),Goes to a location relative to the current directory,cd ../documents
+cd,/,Goes straight to the system root,cd /
+cd,~,Goes to the user's home folder,cd ~
+echo,$HOME,Variable holding the path of the user's home folder,echo $HOME
+echo,$SHELL,"Variable holding the path of the shell in use (bash, zsh)",echo $SHELL
+cat,/etc/passwd,"File with basic user info (UID, home, shell)",cat /etc/passwd
+cat,/etc/shells,File listing the shells installed and available,cat /etc/shells
+cat,/etc/hosts,File with manual IP-to-domain mappings that skip DNS,cat /etc/hosts
+echo,$?,"Exit code of the last command (0 = success, anything else = error)",ls /doesnotexist ; echo $?
+exec,3<> file,"Opens ""file"" for reading and writing as descriptor 3",exec 3<> file.txt
+exec,>&3,Redirects the session's standard output to descriptor 3,exec >&3
+exec,3>&-,Closes descriptor 3,exec 3>&-
+exec,5>&3,Duplicates descriptor 3 into descriptor 5,exec 5>&3
+exec,8>&3-,Duplicates descriptor 3 into 8 and closes the original 3,exec 8>&3-
+cat,/etc/shadow,File where users' encrypted passwords are stored,sudo cat /etc/shadow
+cat,/etc/login.defs,System configuration; ENCRYPT_METHOD sets how passwords are hashed,grep ENCRYPT_METHOD /etc/login.defs
+chmod,o+w,"Adds write permission for ""others"" (other users)",chmod o+w file.txt
+chmod,o-w,"Removes write permission for ""others"" (other users)",chmod o-w file.txt
+rm,-r,Deletes folders and everything inside them recursively,rm -r old_folder
+useradd,-s,Sets the new user's shell,sudo useradd -s /bin/bash john
+useradd,-d,Sets the new user's home folder,sudo useradd -d /home/john john
+usermod,-a,"Together with -G, adds the user to a group without removing them from their current ones",sudo usermod -a -G sudo john
+usermod,-G,Sets the user's secondary groups,"sudo usermod -G developers,docker john"
+chmod,755,"Octal notation: r=4, w=2, x=1, added up per block (owner, group, others); 755 means rwxr-xr-x and 777 means full permissions for everyone",chmod 755 script.sh
+chmod,+t,Enables the Sticky Bit on a folder: only a file's owner or root can delete or rename it,chmod +t /tmp/shared
+rm,-f,"Forces deletion without asking, even if the file is write-protected",rm -f protected_file.txt
+chattr,+i,"Makes the file immutable: nobody, not even root, can modify, delete or rename it until the attribute is removed",sudo chattr +i file.txt
+chattr,-V,Verbose mode when changing the attribute,sudo chattr -V +i file.txt
+chmod,4000,Octal value of the SUID special permission,chmod 4755 program
+chmod,u+s,Symbolic way to set SUID (s bit on the owner's execute permission),chmod u+s program
+chmod,2000,Octal value of the SGID special permission,chmod 2755 folder
+chmod,g+s,Symbolic way to set SGID (s bit on the group's execute permission),chmod g+s folder
+getcap,-r,Searches for and shows capabilities recursively through subfolders,getcap -r / 2>/dev/null
+setcap,-r,Removes the capabilities assigned to a file,sudo setcap -r /usr/bin/ping
+ls,-a,Shows all files including hidden ones (those starting with a dot),ls -a ~
+hostname,-I,Shows the IP address(es) assigned to the machine,hostname -I
+cut,-d,Sets the delimiter used to split the text into columns,"cut -d "":"" -f 1 /etc/passwd"
+cut,-f,Selects the field (column) number to extract,"cut -d "":"" -f 3 /etc/passwd"
+awk,'{print $1}',Prints the first column of each line,ls -l | awk '{print $1}'
+alias,name='absolute_path',Creates a shortcut that runs a long command or path with a short word,alias ll='ls -la'
+export,variable_name,Turns a variable into an environment variable available to other processes,"export MY_VAR=""hello"""
+apt,update,Refreshes the list of available packages from the repositories without installing anything,sudo apt update
+apt,upgrade,Installs updates for the packages you have installed (don't use it on Parrot),sudo apt upgrade
+sudo,pacman -Syu,Arch Linux: syncs the package list and upgrades the whole system,sudo pacman -Syu
+find,-name,Searches for files by exact name or with wildcards,find -name '*xampl*.sh'
+find,-type,Filters by type: file (f) or directory (d),find /home -type f
+find,-perm,Filters by the file's specific permissions,find / -perm -4000 2>/dev/null
+find,-group,Filters by owning group,find /home -group developers
+find,-user,Filters by owning user,find /home -user john
+find,-writable,Shows only files you have write permission on,find /etc -writable 2>/dev/null
+find,-executable,Shows only files you have execute permission on,find /usr/bin -executable -type f
+find,-readable,Shows only files you have read permission on,find /var -readable 2>/dev/null
+tail,-n,Sets how many lines from the end to show,tail -n 20 /var/log/syslog
+awk,'NR==2',Shows only line number 2 (NR = record number),awk 'NR==2' file.txt
+awk,"FS=""/""","Sets ""/"" as the field separator (FS) to split the text into columns","echo ""/home/john"" | awk '{print $2}' FS=""/"""
+echo,-e,"Enables special characters (\n, \t) in the printed text","echo -e ""line1\nline2"""
+echo,"-e ""\n""",\n is a line break; it needs the -e flag,"echo -e ""Hello\nWorld"""
+ssh,-p,Sets the port to connect to when the SSH server doesn't use the default one (22),ssh -p 2222 user@192.168.1.10
+export,TERM=xterm,Sets the terminal type; useful when a remote connection has compatibility issues,export TERM=xterm
+sshpass,-p,Gives the password directly in the command so you don't have to type it when connecting over SSH,sshpass -p 'my_password' ssh user@192.168.1.10
+ssh,bandit0@bandit.labs.overthewire.org -p 2220,Connects to the Bandit server as bandit0 on port 2220 instead of 22,ssh bandit0@bandit.labs.overthewire.org -p 2220
+cat,/home/bandit1/-,"Reads the file named ""-"" by its absolute path, so cat doesn't confuse it with standard input",cat /home/bandit1/-
+cat,./-,"Reads the ""-"" file by pointing to the current directory, avoiding the stdin confusion",cat ./-
+cat,$(pwd)/-,Combines pwd (the current path) with the file name; same effect as the absolute path,cat $(pwd)/-
+grep,"-r ""\w""",Recursively finds lines with at least one alphanumeric character to locate content in files in any folder,"grep -r ""\w"" /home/user/"
+cut,-d ':' -f 2,"Splits each line using "":"" as the delimiter and extracts only the second field","echo ""a:b:c"" | cut -d ':' -f 2"
+tr,':' ' ',"Replaces every "":"" with a space in the processed text","echo ""a:b:c"" | tr ':' ' '"
+awk,"'{print $2}' FS="":""","Uses "":"" as the field separator (FS) and prints the second column of each line","echo ""a:b:c"" | awk '{print $2}' FS="":"""
+awk,'NF{print $NF}',Prints the last field of each line; NF is the number of fields and $NF the value of the last one,"echo ""one two three"" | awk 'NF{print $NF}'"
+tail,-n 1,Shows only the last line of the file or text,tail -n 1 file.txt
+head,-n 1,Shows only the first line of the file or text,head -n 1 file.txt
+cat,"""spaces in this filename""",Reads a file with spaces by wrapping its name in quotes so it's treated as a single name,"cat ""spaces in this filename"""
+cat,spaces\ in\ this\ filename,Reads a file with spaces by escaping each space with a backslash so they don't split the arguments,cat spaces\ in\ this\ filename
+cat,s*,"Uses a wildcard to fill in the file name, as long as no other file starts the same way",cat s*
+cat,home/bandit/s*,"Same wildcard trick, but including the path to the file",cat home/bandit/s*
+find,.,"Lists every file and folder in the current directory, including subdirectories",find .
+grep,"-vE ""bashrc\|profile""","Shows the lines that do NOT match ""bashrc"" or ""profile""; -v inverts the match and -E enables extended regex (\| means ""or"")","ls -a | grep -vE ""bashrc|profile"""
+find,-size,Filters the search by file size,find -size 1033c
+uniq,-u,"Shows only completely unique lines, the ones that never repeat",sort data.txt | uniq -u
+base64,-d,Decodes Base64 text back to its original form,"echo ""aG9sYQ=="" | base64 -d"
+tr,'[A-Za-z]' '[N-ZA-Mn-za-m]',"Replaces each letter with the one 13 positions ahead, applying the ROT13 cipher","echo ""Uryyb"" | tr '[A-Za-z]' '[N-ZA-Mn-za-m]'"
+xxd,-p,"Shows plain hexadecimal output, without addresses or text alongside",xxd -p file.bin
+xxd,-s,Skips to a specific offset in the file before showing it in hexadecimal,xxd -s 16 file.bin
+xxd,-r,Turns a hex dump back into binary,xxd -r data.hex output.bin
+7z,l,Lists an archive's contents without extracting it,7z l backup.7z
+7z,x,Extracts an archive's contents keeping its folder structure,7z x backup.7z
+ssh-copy-id,-i,Sets which public key file to copy when you have several keys,ssh-copy-id -i ~/.ssh/id_ed25519.pub user@192.168.1.10
+ssh,-i,Sets which private key file to use to authenticate over SSH,ssh -i ~/.ssh/id_ed25519 user@192.168.1.10
+cat,~/.ssh/authorized_keys,File with the SSH public keys allowed to log into that account without a password,cat ~/.ssh/authorized_keys
+ss,-nltp,"Shows listening TCP sockets without resolving names, including the process behind each one",sudo ss -nltp
+lsof,-i:,Filters the output to show only connections related to the given port,sudo lsof -i:80
+ps,-faux,Shows every process from every user in a detailed tree format,ps -faux
+ps,-eo command,Shows only the command column for each process,ps -eo command
+echo,"""obase=10; ibase=16; $hexNum"" | bc",Converts a variable's hexadecimal value to decimal using bc,"hexNum=""FF""; echo ""obase=10; ibase=16; $hexNum"" | bc"
+cat,/proc/net/tcp,"Virtual file with the active TCP connections (IPs, ports and state) in hexadecimal",cat /proc/net/tcp
+ncat,--ssl,Encrypts the connection with SSL/TLS to protect the data being sent,ncat --ssl 192.168.1.10 443
+ssh,"user@host ""command""","Runs a command directly on the remote server when connecting, without loading a full interactive session or the user's bashrc","ssh user@192.168.1.10 ""ls -la"""
+bash,-p,Starts the shell in privileged mode so the effective UID/GID aren't reset; useful to keep privileges gained through SUID,bash -p
+ls,/etc/cron.d,Directory holding the configuration files of the system's Cron jobs,ls -l /etc/cron.d
+crontab,* * * * * command,"Cron job format: Minute Hour Day-of-month Month Day-of-week Command; * means every value (every minute, hour, etc.)",* * * * * /home/user/script.sh
+watch,-n 1,Sets the interval in seconds between runs; here every 1 second,watch -n 1 ls -l /tmp
+more,v,"From inside more, opens visual mode (the vi editor) on the content",v (inside more)
+more,:set shell=/bin/bash,"Once in visual mode (after Esc + Shift + :), sets Bash as the shell to use",:set shell=/bin/bash
+more,:shell,"Opens an interactive shell from visual mode, escaping more's context",:shell
+git show,(commit id),Shows every change applied in that commit,git show a1b2c3d
+git checkout,(commit id),"Takes the project back to that point in history, restoring the files that existed then",git checkout a1b2c3d
+git branch,-a,"Lists every branch in the project, both local and remote",git branch -a
+git checkout,(branch name),Switches to the given branch by name,git checkout develop
+git show,(tag name),"Shows info about the given tag and the commit it points to, with its changes",git show v1.0
+git add,-f,Forces a file into the staging area even if .gitignore ignores it,git add -f key.txt
+git commit,"-m ""identifier""",Sets the message that identifies the commit,"git commit -m ""Add key.txt"""
+git push,-u origin branch,Pushes commits to the given branch on the origin remote and links it so later push/pull don't need it spelled out,git push -u origin master
