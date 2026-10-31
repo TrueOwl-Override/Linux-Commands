@@ -17,6 +17,7 @@ cat,/etc/passwd,"File with basic user info (UID, home, shell)",cat /etc/passwd
 cat,/etc/shells,File listing the shells installed and available,cat /etc/shells
 cat,/etc/hosts,File with manual IP-to-domain mappings that skip DNS,cat /etc/hosts
 echo,$?,"Exit code of the last command (0 = success, anything else = error)",ls /doesnotexist ; echo $?
+>,/dev/null,Special file that works as a trash bin: anything sent to it is discarded,"echo ""hello"" > /dev/null"
 exec,3<> file,"Opens ""file"" for reading and writing as descriptor 3",exec 3<> file.txt
 exec,>&3,Redirects the session's standard output to descriptor 3,exec >&3
 exec,3>&-,Closes descriptor 3,exec 3>&-

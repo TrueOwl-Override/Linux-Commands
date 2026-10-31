@@ -4,7 +4,7 @@
 
 **A personal reference of Linux commands, grouped by what they do, with copy-ready examples.**
 
-![Commands](https://img.shields.io/badge/commands-102-2ea44f?style=for-the-badge) ![Parameters](https://img.shields.io/badge/parameters-121-0969da?style=for-the-badge) ![Categories](https://img.shields.io/badge/categories-14-8250df?style=for-the-badge)
+![Commands](https://img.shields.io/badge/commands-102-2ea44f?style=for-the-badge) ![Parameters](https://img.shields.io/badge/parameters-122-0969da?style=for-the-badge) ![Categories](https://img.shields.io/badge/categories-14-8250df?style=for-the-badge)
 
 🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)  ·  🐚 **Companion repo:** [Bash-Scripting-From-Scratch](https://github.com/TrueOwl-Override/Bash-Scripting-From-Scratch)
 

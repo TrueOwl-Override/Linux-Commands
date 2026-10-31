@@ -2,7 +2,7 @@
 
 > Chain commands, decide where output and errors go, and run things in the background.
 
-**12** commands · **5** parameters  ·  [⬅ Back to index](../README.md)
+**12** commands · **6** parameters  ·  [⬅ Back to index](../README.md)
 
 <a id="commands"></a>
 
@@ -102,6 +102,10 @@ Redirects output to a file, overwriting its contents
 ```bash
 echo "hello" > file.txt
 ```
+
+| Parameter | What it does | Example |
+|:--|:--|:--|
+| `/dev/null` | Special file that works as a trash bin: anything sent to it is discarded | `echo "hello" > /dev/null` |
 
 <sub>[⬆ Back to top](#commands)</sub>
 
