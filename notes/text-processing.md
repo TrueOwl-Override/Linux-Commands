@@ -2,7 +2,7 @@
 
 > Filter, cut, transform and sort text coming from files or other commands.
 
-**9** commands · **18** parameters  ·  [⬅ Back to index](../README.md)
+**9** commands · **19** parameters  ·  [⬅ Back to index](../README.md)
 
 <a id="commands"></a>
 
@@ -38,6 +38,7 @@ echo "Hello world"
 | `$?` | Exit code of the last command (0 = success, anything else = error) | `ls /doesnotexist ; echo $?` |
 | `-e` | Enables special characters (\n, \t) in the printed text | `echo -e "line1\nline2"` |
 | `-e "\n"` | \n is a line break; it needs the -e flag | `echo -e "Hello\nWorld"` |
+| `-e "\t"` | \t is a tab; it needs the -e flag | `echo -e "Name\tAge"` |
 | `"obase=10; ibase=16; $hexNum" \| bc` | Converts a variable's hexadecimal value to decimal using bc | `hexNum="FF"; echo "obase=10; ibase=16; $hexNum" \| bc` |
 
 <sub>[⬆ Back to top](#commands)</sub>

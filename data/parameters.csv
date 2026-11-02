@@ -66,6 +66,7 @@ awk,'NR==2',Shows only line number 2 (NR = record number),awk 'NR==2' file.txt
 awk,"FS=""/""","Sets ""/"" as the field separator (FS) to split the text into columns","echo ""/home/john"" | awk '{print $2}' FS=""/"""
 echo,-e,"Enables special characters (\n, \t) in the printed text","echo -e ""line1\nline2"""
 echo,"-e ""\n""",\n is a line break; it needs the -e flag,"echo -e ""Hello\nWorld"""
+echo,"-e ""\t""",\t is a tab; it needs the -e flag,"echo -e ""Name\tAge"""
 ssh,-p,Sets the port to connect to when the SSH server doesn't use the default one (22),ssh -p 2222 user@192.168.1.10
 export,TERM=xterm,Sets the terminal type; useful when a remote connection has compatibility issues,export TERM=xterm
 sshpass,-p,Gives the password directly in the command so you don't have to type it when connecting over SSH,sshpass -p 'my_password' ssh user@192.168.1.10
