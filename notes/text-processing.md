@@ -2,7 +2,7 @@
 
 > Filter, cut, transform and sort text coming from files or other commands.
 
-**9** commands · **19** parameters  ·  [⬅ Back to index](../README.md)
+**9** commands · **22** parameters  ·  [⬅ Back to index](../README.md)
 
 <a id="commands"></a>
 
@@ -62,6 +62,7 @@ awk '{print $2}' data.txt
 | `FS="/"` | Sets "/" as the field separator (FS) to split the text into columns | `echo "/home/john" \| awk '{print $2}' FS="/"` |
 | `'{print $2}' FS=":"` | Uses ":" as the field separator (FS) and prints the second column of each line | `echo "a:b:c" \| awk '{print $2}' FS=":"` |
 | `'NF{print $NF}'` | Prints the last field of each line; NF is the number of fields and $NF the value of the last one | `echo "one two three" \| awk 'NF{print $NF}'` |
+| `"/name: \"Forge\"/,/resuelta:/"` | Prints the block of lines from the one matching the first pattern up to the one matching the second | `awk "/name: \"Forge\"/,/resuelta:/" bundle.js` |
 
 <sub>[⬆ Back to top](#commands)</sub>
 
@@ -101,6 +102,7 @@ echo "a:b:c" | tr ':' ' '
 |:--|:--|:--|
 | `':' ' '` | Replaces every ":" with a space in the processed text | `echo "a:b:c" \| tr ':' ' '` |
 | `'[A-Za-z]' '[N-ZA-Mn-za-m]'` | Replaces each letter with the one 13 positions ahead, applying the ROT13 cipher | `echo "Uryyb" \| tr '[A-Za-z]' '[N-ZA-Mn-za-m]'` |
+| `-d ' '` | Deletes every space from the processed text | `echo "h o l a" \| tr -d ' '` |
 
 <sub>[⬆ Back to top](#commands)</sub>
 
@@ -115,6 +117,10 @@ Finds, replaces, deletes or modifies text in a file or stream, usually with regu
 ```bash
 sed 's/old/new/g' file.txt
 ```
+
+| Parameter | What it does | Example |
+|:--|:--|:--|
+| `'s/^ *//'` | Removes the spaces at the start of each line | `echo "   hello" \| sed 's/^ *//'` |
 
 <sub>[⬆ Back to top](#commands)</sub>
 

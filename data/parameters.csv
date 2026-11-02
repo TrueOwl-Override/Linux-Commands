@@ -79,6 +79,7 @@ cut,-d ':' -f 2,"Splits each line using "":"" as the delimiter and extracts only
 tr,':' ' ',"Replaces every "":"" with a space in the processed text","echo ""a:b:c"" | tr ':' ' '"
 awk,"'{print $2}' FS="":""","Uses "":"" as the field separator (FS) and prints the second column of each line","echo ""a:b:c"" | awk '{print $2}' FS="":"""
 awk,'NF{print $NF}',Prints the last field of each line; NF is the number of fields and $NF the value of the last one,"echo ""one two three"" | awk 'NF{print $NF}'"
+awk,"""/name: \""Forge\""/,/resuelta:/""",Prints the block of lines from the one matching the first pattern up to the one matching the second,"awk ""/name: \""Forge\""/,/resuelta:/"" bundle.js"
 tail,-n 1,Shows only the last line of the file or text,tail -n 1 file.txt
 head,-n 1,Shows only the first line of the file or text,head -n 1 file.txt
 cat,"""spaces in this filename""",Reads a file with spaces by wrapping its name in quotes so it's treated as a single name,"cat ""spaces in this filename"""
@@ -87,10 +88,14 @@ cat,s*,"Uses a wildcard to fill in the file name, as long as no other file start
 cat,home/bandit/s*,"Same wildcard trick, but including the path to the file",cat home/bandit/s*
 find,.,"Lists every file and folder in the current directory, including subdirectories",find .
 grep,"-vE ""bashrc\|profile""","Shows the lines that do NOT match ""bashrc"" or ""profile""; -v inverts the match and -E enables extended regex (\| means ""or"")","ls -a | grep -vE ""bashrc|profile"""
+grep,-A 5,Shows the match and the 5 lines that come after it (After),"grep -A 5 ""root"" /etc/passwd"
+grep,-B 5,Shows the match and the 5 lines that come before it (Before),"grep -B 5 ""root"" /etc/passwd"
+grep,-C 5,Shows the match with 5 lines of context before and after it (Context),"grep -C 5 ""root"" /etc/passwd"
 find,-size,Filters the search by file size,find -size 1033c
 uniq,-u,"Shows only completely unique lines, the ones that never repeat",sort data.txt | uniq -u
 base64,-d,Decodes Base64 text back to its original form,"echo ""aG9sYQ=="" | base64 -d"
 tr,'[A-Za-z]' '[N-ZA-Mn-za-m]',"Replaces each letter with the one 13 positions ahead, applying the ROT13 cipher","echo ""Uryyb"" | tr '[A-Za-z]' '[N-ZA-Mn-za-m]'"
+tr,-d ' ',Deletes every space from the processed text,"echo ""h o l a"" | tr -d ' '"
 xxd,-p,"Shows plain hexadecimal output, without addresses or text alongside",xxd -p file.bin
 xxd,-s,Skips to a specific offset in the file before showing it in hexadecimal,xxd -s 16 file.bin
 xxd,-r,Turns a hex dump back into binary,xxd -r data.hex output.bin
@@ -122,3 +127,4 @@ git show,(tag name),"Shows info about the given tag and the commit it points to,
 git add,-f,Forces a file into the staging area even if .gitignore ignores it,git add -f key.txt
 git commit,"-m ""identifier""",Sets the message that identifies the commit,"git commit -m ""Add key.txt"""
 git push,-u origin branch,Pushes commits to the given branch on the origin remote and links it so later push/pull don't need it spelled out,git push -u origin master
+sed,'s/^ *//',Removes the spaces at the start of each line,"echo ""   hello"" | sed 's/^ *//'"
