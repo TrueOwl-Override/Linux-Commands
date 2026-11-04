@@ -4,7 +4,7 @@
 
 **A personal reference of Linux commands, grouped by what they do, with copy-ready examples.**
 
-![Commands](https://img.shields.io/badge/commands-102-2ea44f?style=for-the-badge) ![Parameters](https://img.shields.io/badge/parameters-129-0969da?style=for-the-badge) ![Categories](https://img.shields.io/badge/categories-14-8250df?style=for-the-badge)
+![Commands](https://img.shields.io/badge/commands-103-2ea44f?style=for-the-badge) ![Parameters](https://img.shields.io/badge/parameters-129-0969da?style=for-the-badge) ![Categories](https://img.shields.io/badge/categories-14-8250df?style=for-the-badge)
 
 🌐 **Searchable web version:** [`docs/index.html`](docs/index.html)  ·  🐚 **Companion repo:** [Bash-Scripting-From-Scratch](https://github.com/TrueOwl-Override/Bash-Scripting-From-Scratch)
 
@@ -19,7 +19,7 @@
 | 📁 | **[Navigation & Files](notes/navigation-files.md)** | Move around the filesystem and create, copy, delete and inspect files and folders. | `pwd` `ls` `cd` `mkdir` `touch` `cp` `rm` `file` `stat` `*` |
 | 📝 | **[Viewing & Editing Files](notes/viewing-editing-files.md)** | Read files in the terminal, page through output, compare files and edit text. | `cat` `more` `head` `tail` `rev` `diff` `nano` `vi` |
 | 🔍 | **[Searching](notes/searching.md)** | Find files anywhere on the system and locate where commands live. | `find` `grep` `which` `command` `xargs` |
-| ✂️ | **[Text Processing](notes/text-processing.md)** | Filter, cut, transform and sort text coming from files or other commands. | `echo` `awk` `cut` `tr` `sed` `sort` `uniq` `tee` `sponge` |
+| ✂️ | **[Text Processing](notes/text-processing.md)** | Filter, cut, transform and sort text coming from files or other commands. | `echo` `awk` `cut` `tr` `sed` `sort` `uniq` `tee` `sponge` `column` |
 | 🔀 | **[Pipes, Redirection & Operators](notes/pipes-redirection-operators.md)** | Chain commands, decide where output and errors go, and run things in the background. | `\|` `;` `&&` `\|\|` `&` `>` `>>` `2>/dev/null` `2>&1` `&>/dev/null` `exec` `disown` |
 | 👤 | **[Users & Groups](notes/users-groups.md)** | Check who you are, switch users, and manage accounts, passwords and groups. | `whoami` `id` `sudo` `su` `exit` `useradd` `usermod` `passwd` `groupadd` |
 | 🔐 | **[Permissions & Attributes](notes/permissions-attributes.md)** | Control who can read, write and run files, plus special attributes and capabilities. | `chmod` `chown` `chgrp` `lsattr` `chattr` `getcap` `setcap` |
@@ -50,6 +50,7 @@
 | [`chgrp`](notes/permissions-attributes.md#cmd-chgrp) | Changes the group that owns a file or folder | 🔐 Permissions & Attributes |
 | [`chmod`](notes/permissions-attributes.md#cmd-chmod) | Changes the permissions of a file or folder; + adds and - removes a permission | 🔐 Permissions & Attributes |
 | [`chown`](notes/permissions-attributes.md#cmd-chown) | Changes the owner and/or owning group of a file or folder | 🔐 Permissions & Attributes |
+| [`column`](notes/text-processing.md#cmd-column) | Arranges incoming text into aligned columns, like a table | ✂️ Text Processing |
 | [`command`](notes/searching.md#cmd-command) | With -v, shows the path of a command, similar to which | 🔍 Searching |
 | [`cp`](notes/navigation-files.md#cmd-cp) | Copies files or folders from one place to another | 📁 Navigation & Files |
 | [`crontab`](notes/processes-scheduling.md#cmd-crontab) | Lets you view, create and edit a user's Cron jobs (scheduled tasks) | ⏱️ Processes & Scheduling |

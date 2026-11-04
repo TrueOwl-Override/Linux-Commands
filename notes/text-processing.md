@@ -2,7 +2,7 @@
 
 > Filter, cut, transform and sort text coming from files or other commands.
 
-**9** commands · **22** parameters  ·  [⬅ Back to index](../README.md)
+**10** commands · **22** parameters  ·  [⬅ Back to index](../README.md)
 
 <a id="commands"></a>
 
@@ -17,6 +17,7 @@
 | [`uniq`](#cmd-uniq) | Removes consecutive duplicate lines; usually used after sort |
 | [`tee`](#cmd-tee) | Shows a command's output on screen and saves it to a file at the same time |
 | [`sponge`](#cmd-sponge) | Reads all of its input before writing it to a file, avoiding problems when overwriting the same file you're reading |
+| [`column`](#cmd-column) | Arranges incoming text into aligned columns, like a table |
 
 ---
 
@@ -180,6 +181,20 @@ Reads all of its input before writing it to a file, avoiding problems when overw
 
 ```bash
 sort data.txt | sponge data.txt
+```
+
+<sub>[⬆ Back to top](#commands)</sub>
+
+---
+
+<a id="cmd-column"></a>
+
+## `column`
+
+Arranges incoming text into aligned columns, like a table
+
+```bash
+cat /etc/passwd | column -t -s ':'
 ```
 
 <sub>[⬆ Back to top](#commands)</sub>
