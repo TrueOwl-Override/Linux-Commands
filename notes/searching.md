@@ -2,7 +2,7 @@
 
 > Find files anywhere on the system and locate where commands live.
 
-**5** commands · **17** parameters  ·  [⬅ Back to index](../README.md)
+**5** commands · **18** parameters  ·  [⬅ Back to index](../README.md)
 
 <a id="commands"></a>
 
@@ -56,6 +56,7 @@ grep "error" log.txt
 | Parameter | What it does | Example |
 |:--|:--|:--|
 | `-n` | Shows the line number of each match | `grep -n "root" /etc/passwd` |
+| `-i` | Ignores uppercase and lowercase when looking for matches | `grep -i "error" log.txt` |
 | `-r "\w"` | Recursively finds lines with at least one alphanumeric character to locate content in files in any folder | `grep -r "\w" /home/user/` |
 | `-vE "bashrc\\|profile"` | Shows the lines that do NOT match "bashrc" or "profile"; -v inverts the match and -E enables extended regex (\\| means "or") | `ls -a \| grep -vE "bashrc\|profile"` |
 | `-A 5` | Shows the match and the 5 lines that come after it (After) | `grep -A 5 "root" /etc/passwd` |

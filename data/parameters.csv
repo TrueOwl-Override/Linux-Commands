@@ -1,6 +1,7 @@
 Command,Parameter,Description,Example
 sudo,su,Switches to the root session permanently until you exit,sudo su
 grep,-n,Shows the line number of each match,"grep -n ""root"" /etc/passwd"
+grep,-i,Ignores uppercase and lowercase when looking for matches,"grep -i ""error"" log.txt"
 cat,/etc/group,File listing the existing groups and their members,cat /etc/group
 echo,$PATH,Variable holding the folders where the system looks for commands,echo $PATH
 command,-v,"Shows the path of a command, similar to which",command -v python3
